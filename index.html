@@ -45,6 +45,54 @@
     overflow: hidden;
   }
 
+  /* SYNC INDICATOR */
+  #sync-indicator {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 9999;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+  #sync-indicator.syncing {
+    background: rgba(251,191,36,0.15);
+    border: 1px solid rgba(251,191,36,0.4);
+    color: var(--warn);
+    opacity: 1;
+  }
+  #sync-indicator.synced {
+    background: rgba(0,229,160,0.15);
+    border: 1px solid rgba(0,229,160,0.4);
+    color: var(--accent);
+    opacity: 1;
+  }
+  #sync-indicator.offline {
+    background: rgba(248,113,113,0.15);
+    border: 1px solid rgba(248,113,113,0.4);
+    color: var(--rem-neg);
+    opacity: 1;
+  }
+
+  /* CONN DOT */
+  #conn-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    display: inline-block;
+    margin-right: 3px;
+    transition: background 0.3s;
+  }
+  #conn-dot.online  { background: var(--accent); box-shadow: 0 0 5px rgba(0,229,160,0.5); }
+  #conn-dot.offline { background: var(--rem-neg); }
+  #conn-dot.syncing { background: var(--warn); animation: pulse-dot 0.8s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
   /* TOP BAR */
   #topbar {
     display: flex;
@@ -98,8 +146,8 @@
   .chip-warn { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
   .chip-warn .lbl { color: rgba(251,191,36,0.6); }
   .chip-warn .val { color: var(--warn); }
+  .chip-sync { cursor: default; }
 
-  /* BUTTONS */
   #btn-add {
     display: flex;
     align-items: center;
@@ -200,60 +248,33 @@
   .tab-name:focus { outline: 1px solid rgba(0,229,160,0.4); border-radius: 3px; padding: 1px 4px; }
 
   .tab-close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 10px;
-    padding: 2px 3px;
-    border-radius: 3px;
-    line-height: 1;
-    transition: color 0.1s, background 0.1s;
-    opacity: 0;
+    background: none; border: none; color: var(--text-muted); cursor: pointer;
+    font-size: 10px; padding: 2px 3px; border-radius: 3px; line-height: 1;
+    transition: color 0.1s, background 0.1s; opacity: 0;
   }
   .tab:hover .tab-close, .tab.active .tab-close { opacity: 1; }
   .tab-close:hover { color: var(--rem-neg); background: rgba(248,113,113,0.15); }
 
   #btn-new-tab {
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    margin-bottom: 1px;
-    background: none;
-    border: 1px dashed var(--border);
-    border-radius: 6px 6px 0 0;
-    color: var(--text-muted);
-    font-size: 16px;
-    cursor: pointer;
-    transition: color 0.12s, border-color 0.12s;
-    flex-shrink: 0;
+    display: flex; align-items: center; padding: 0 10px; margin-bottom: 1px;
+    background: none; border: 1px dashed var(--border); border-radius: 6px 6px 0 0;
+    color: var(--text-muted); font-size: 16px; cursor: pointer;
+    transition: color 0.12s, border-color 0.12s; flex-shrink: 0;
   }
   #btn-new-tab:hover { color: var(--accent); border-color: rgba(0,229,160,0.3); }
 
   /* SEARCH */
   #search-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 20px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
+    display: flex; align-items: center; gap: 12px; padding: 8px 20px;
+    background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0;
   }
   #search-wrap { position: relative; flex: 1; max-width: 380px; }
   #search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
   #search-input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    outline: none;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    padding: 7px 28px 7px 32px;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    caret-color: var(--accent);
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; outline: none; color: var(--text);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    padding: 7px 28px 7px 32px; transition: border-color 0.15s, box-shadow 0.15s; caret-color: var(--accent);
   }
   #search-input::placeholder { color: var(--text-muted); }
   #search-input:focus { border-color: rgba(0,229,160,0.4); box-shadow: 0 0 0 2px rgba(0,229,160,0.10); }
@@ -272,7 +293,7 @@
     width: 64px; background: var(--surface2); border: 1px solid var(--border);
     border-radius: 6px; outline: none; color: var(--warn);
     font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    padding: 5px 8px; text-align: center; transition: border-color 0.15s; caret-color: var(--warn);
+    padding: 5px 8px; text-align: center; caret-color: var(--warn);
   }
   #low-stock-thresh:focus { border-color: rgba(251,191,36,0.5); }
 
@@ -281,7 +302,6 @@
   #sheet-wrapper::-webkit-scrollbar { width: 8px; height: 8px; }
   #sheet-wrapper::-webkit-scrollbar-track { background: var(--surface); }
   #sheet-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-  #sheet-wrapper::-webkit-scrollbar-thumb:hover { background: #3a3e4a; }
   #sheet-wrapper::-webkit-scrollbar-corner { background: var(--surface); }
 
   table { border-collapse: collapse; width: 100%; }
@@ -315,18 +335,15 @@
     animation: pulse-warn 1.6s ease-in-out infinite;
   }
   tbody tr.warn-stock { border-left: 3px solid var(--warn) !important; background: rgba(251,191,36,0.03) !important; }
-  tbody tr.warn-stock:hover { background: rgba(251,191,36,0.06) !important; }
-  @keyframes pulse-warn { 0%,100%{opacity:1}50%{opacity:0.3} }
+  @keyframes pulse-warn { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   tbody tr.hidden-row { display: none; }
-
-  @keyframes undo-flash { 0%{background:rgba(0,229,160,0.2)}100%{background:transparent} }
+  @keyframes undo-flash { 0%{background:rgba(0,229,160,0.2)} 100%{background:transparent} }
   tbody tr.undo-flash { animation: undo-flash 0.6s ease forwards; }
+  @keyframes new-row-flash { 0%{background:rgba(0,229,160,0.12)} 100%{background:transparent} }
+  tbody tr.new-row-flash { animation: new-row-flash 0.8s ease forwards; }
 
-  td {
-    padding: 0 6px; height: var(--row-h);
-    border-right: 1px solid var(--border-light); vertical-align: middle;
-  }
+  td { padding: 0 6px; height: var(--row-h); border-right: 1px solid var(--border-light); vertical-align: middle; }
   td:last-child { border-right: none; }
   td.td-idx { text-align: center; font-size: 10px; color: var(--text-muted); font-weight: 600; user-select: none; }
 
@@ -349,13 +366,12 @@
 
   td.td-del { text-align: center; }
   .btn-del { background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 7px;border-radius:4px;font-size:13px;transition:color 0.1s,background 0.1s;opacity:0; }
-  tr:hover .btn-del,tr:focus-within .btn-del{opacity:1}
-  .btn-del:hover{color:var(--rem-neg);background:rgba(248,113,113,0.12)}
+  tr:hover .btn-del, tr:focus-within .btn-del { opacity:1; }
+  .btn-del:hover { color:var(--rem-neg);background:rgba(248,113,113,0.12); }
 
   #empty-state { text-align:center;padding:70px 20px;color:var(--text-muted);display:none; }
   #empty-state p { font-size:15px;margin-bottom:8px;color:var(--text-dim); }
   #empty-state small { font-size:11px; }
-
   #no-results { display:none;text-align:center;padding:50px 20px;color:var(--text-muted); }
   #no-results p { font-size:14px;color:var(--text-dim); }
 
@@ -372,25 +388,19 @@
   .sb-hint { margin-left:auto;font-size:10px;color:var(--text-muted); }
 
   /* TOASTS */
-  #save-badge {
-    position:fixed;bottom:44px;right:16px;padding:6px 14px;
-    background:rgba(0,229,160,0.15);border:1px solid rgba(0,229,160,0.35);border-radius:20px;
-    color:var(--accent);font-size:11px;font-weight:600;letter-spacing:0.5px;
-    opacity:0;transform:translateY(6px);transition:opacity 0.2s,transform 0.2s;pointer-events:none;z-index:999;
-  }
-  #save-badge.visible{opacity:1;transform:translateY(0)}
-
   .toast {
     position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(10px);
     border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;
     opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;z-index:998;white-space:nowrap;
   }
-  .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.visible { opacity:1;transform:translateX(-50%) translateY(0); }
   #undo-toast { background:rgba(0,229,160,0.12);border:1px solid rgba(0,229,160,0.35);color:var(--accent); }
   #low-stock-toast { background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--rem-neg);z-index:997; }
 </style>
 </head>
 <body>
+
+<div id="sync-indicator">⟳ Syncing…</div>
 
 <div id="topbar">
   <div id="logo">∞ Inventory <span>LIVE SHEET</span></div>
@@ -399,10 +409,9 @@
     <div class="chip"><span class="lbl">Total Qty</span><span class="val" id="c-qty">0</span></div>
     <div class="chip"><span class="lbl">Total Sold</span><span class="val" id="c-sold">0</span></div>
     <div class="chip"><span class="lbl">Remaining</span><span class="val" id="c-rem">0</span></div>
-    <div class="chip chip-warn"><span class="lbl">⚠ Low Stock</span><span class="val" id="c-low">0</span></div>
-    <button id="btn-undo" class="ghost-btn" onclick="undo()" disabled title="Undo (Ctrl+Z)">
-      ↩ Undo <span class="undo-badge" id="undo-badge">0</span>
-    </button>
+    <div class="chip chip-warn"><span class="lbl">⚠ Low</span><span class="val" id="c-low">0</span></div>
+    <div class="chip chip-sync"><span id="conn-dot"></span><span id="conn-label" style="font-size:10px;color:var(--text-dim)">Connecting…</span></div>
+    <button id="btn-undo" class="ghost-btn" onclick="undo()" disabled title="Undo (Ctrl+Z)">↩ Undo <span class="undo-badge" id="undo-badge">0</span></button>
     <button id="btn-clear" class="ghost-btn" onclick="clearAll()">✕ Clear Sheet</button>
     <button id="btn-add" onclick="addRow()">＋ Add Row</button>
   </div>
@@ -452,32 +461,129 @@
   <div class="sb"><span class="sb-lbl">Items</span><span class="sb-val" id="s-rows">0</span></div>
   <div class="sb"><span class="sb-lbl">Total Qty</span><span class="sb-val" id="s-qty">0</span></div>
   <div class="sb"><span class="sb-lbl">Total Sold</span><span class="sb-val" id="s-sold">0</span></div>
-  <div class="sb"><span class="sb-lbl">Total Remaining</span><span class="sb-val" id="s-rem">0</span></div>
+  <div class="sb"><span class="sb-lbl">Remaining</span><span class="sb-val" id="s-rem">0</span></div>
   <div class="sb"><span class="sb-lbl">⚠ Low</span><span class="sb-val warn" id="s-low">0</span></div>
-  <span class="sb-hint">TAB/ENTER → next &nbsp;·&nbsp; ↑↓ → move rows &nbsp;·&nbsp; Ctrl+Z → undo &nbsp;·&nbsp; Dbl-click tab → rename</span>
+  <span class="sb-hint">TAB/ENTER → next &nbsp;·&nbsp; Ctrl+Z → undo &nbsp;·&nbsp; Dbl-click tab → rename &nbsp;·&nbsp; ☁ Auto-synced</span>
 </div>
 
-<div id="save-badge">✓ Saved</div>
 <div id="undo-toast" class="toast"></div>
 <div id="low-stock-toast" class="toast"></div>
 
-<script>
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+/* ═══════════════════════════════════
+   FIREBASE INIT
+═══════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyC5MldYPEf3s6XAkdpl3SiLABvngRtQsOw",
+  authDomain: "sklad-6b353.firebaseapp.com",
+  databaseURL: "https://sklad-6b353-default-rtdb.firebaseio.com",
+  projectId: "sklad-6b353",
+  storageBucket: "sklad-6b353.firebasestorage.app",
+  messagingSenderId: "441341964053",
+  appId: "1:441341964053:web:c60830429a5c4a66fc431c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+const DB_PATH = 'inventory_v1';
+
 /* ═══════════════════════════════════
    STATE
 ═══════════════════════════════════ */
-const STORAGE_KEY = 'inv_sheets_v3';
-const THRESH_KEY  = 'inv_thresh_v1';
-const MAX_UNDO    = 20;
+const THRESH_KEY = 'inv_thresh_v1';
+const MAX_UNDO   = 20;
 
-let sheets        = [];
-let activeId      = null;
-let undoStack     = [];
-let rowCount      = 0;
-let searchQuery   = '';
-let saveTimer     = null;
-let lowTimer      = null;
+let sheets     = [];
+let activeId   = null;
+let undoStack  = [];
+let rowCount   = 0;
+let searchQuery = '';
+let lowTimer   = null;
+let isSyncing  = false;
+let remoteListener = null;
+
+// Debounce timer for pushing to Firebase
+let pushTimer = null;
 
 const $tbody = () => document.getElementById('tbody');
+
+/* ═══════════════════════════════════
+   CONNECTION STATUS
+═══════════════════════════════════ */
+function setConnStatus(status) {
+  const dot = document.getElementById('conn-dot');
+  const lbl = document.getElementById('conn-label');
+  dot.className = status;
+  if (status === 'online')  lbl.textContent = 'Live';
+  if (status === 'offline') lbl.textContent = 'Offline';
+  if (status === 'syncing') lbl.textContent = 'Syncing…';
+}
+
+/* ═══════════════════════════════════
+   FIREBASE PUSH / LISTEN
+═══════════════════════════════════ */
+function schedulePush() {
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushToFirebase, 600);
+}
+
+function pushToFirebase() {
+  // Save current active sheet rows first
+  if (activeId) {
+    const cur = sheets.find(s => s.id === activeId);
+    if (cur) cur.rows = captureRows();
+  }
+  setConnStatus('syncing');
+  const payload = { sheets, activeId, thresh: document.getElementById('low-stock-thresh').value };
+  set(ref(db, DB_PATH), payload)
+    .then(() => setConnStatus('online'))
+    .catch(() => setConnStatus('offline'));
+}
+
+function startListening() {
+  if (remoteListener) off(ref(db, DB_PATH));
+  const dbRef = ref(db, DB_PATH);
+  onValue(dbRef, snapshot => {
+    const data = snapshot.val();
+    if (!data) {
+      // First time — create default sheets
+      initDefaultSheets();
+      return;
+    }
+    // Don't re-render if WE just pushed (avoid cursor jump)
+    if (isSyncing) { isSyncing = false; return; }
+
+    // Apply remote data
+    if (data.thresh) document.getElementById('low-stock-thresh').value = data.thresh;
+    if (data.sheets && Array.isArray(data.sheets)) {
+      sheets = data.sheets;
+      // Keep activeId valid
+      if (!activeId || !sheets.find(s => s.id === activeId)) {
+        activeId = data.activeId || sheets[0]?.id;
+      }
+      renderTabs();
+      loadSheetRows();
+    }
+    setConnStatus('online');
+  }, err => {
+    console.error(err);
+    setConnStatus('offline');
+  });
+}
+
+function initDefaultSheets() {
+  ['Sheet 1', 'Sheet 2', 'Sheet 3'].forEach(n => {
+    sheets.push({ id: uid(), name: n, rows: [] });
+  });
+  activeId = sheets[0].id;
+  renderTabs();
+  loadSheetRows();
+  pushToFirebase();
+}
 
 /* ═══════════════════════════════════
    UNDO
@@ -499,9 +605,7 @@ function undo() {
   if (!undoStack.length) return;
   const state = undoStack.pop();
   refreshUndoBtn();
-
   if (state.id !== activeId) switchSheet(state.id, false);
-
   $tbody().innerHTML = '';
   rowCount = 0;
   state.rows.forEach(r => {
@@ -511,14 +615,11 @@ function undo() {
     ins[2].value = r.qty;  ins[3].value = r.sold;
     calcRow(tr);
   });
-  reindex(); recalcAll(); applySearch(); saveData();
-
+  reindex(); recalcAll(); applySearch();
+  schedulePush();
   $tbody().querySelectorAll('tr').forEach(tr => {
-    tr.classList.remove('undo-flash');
-    void tr.offsetWidth;
-    tr.classList.add('undo-flash');
+    tr.classList.remove('undo-flash'); void tr.offsetWidth; tr.classList.add('undo-flash');
   });
-
   showToast('undo-toast', `↩ Undid: ${state.label}`);
 }
 
@@ -544,12 +645,11 @@ function newSheet(name, switchTo = true) {
   sheets.push({ id, name: name || `Sheet ${sheets.length + 1}`, rows: [] });
   renderTabs();
   if (switchTo) switchSheet(id);
-  else saveData();
+  else schedulePush();
   return id;
 }
 
-function switchSheet(id, snap = false) {
-  // Save current before switch
+function switchSheet(id) {
   if (activeId) {
     const cur = sheets.find(s => s.id === activeId);
     if (cur) cur.rows = captureRows();
@@ -568,10 +668,10 @@ function deleteSheet(id) {
   sheets.splice(idx, 1);
   if (activeId === id) {
     activeId = null;
-    switchSheet(sheets[Math.max(0, idx - 1)].id, false);
+    switchSheet(sheets[Math.max(0, idx - 1)].id);
   }
   renderTabs();
-  saveData();
+  schedulePush();
 }
 
 function renderTabs() {
@@ -584,22 +684,15 @@ function renderTabs() {
     tab.className = 'tab' + (sheet.id === activeId ? ' active' : '');
 
     const nameEl = document.createElement('input');
-    nameEl.type = 'text';
-    nameEl.className = 'tab-name';
-    nameEl.value = sheet.name;
-    nameEl.readOnly = true;
+    nameEl.type = 'text'; nameEl.className = 'tab-name';
+    nameEl.value = sheet.name; nameEl.readOnly = true;
     nameEl.title = 'Double-click to rename';
-
-    nameEl.addEventListener('dblclick', () => {
-      if (sheet.id !== activeId) return;
-      nameEl.readOnly = false;
-      nameEl.focus(); nameEl.select();
-    });
+    nameEl.addEventListener('dblclick', () => { if (sheet.id !== activeId) return; nameEl.readOnly = false; nameEl.focus(); nameEl.select(); });
     nameEl.addEventListener('blur', () => {
       nameEl.readOnly = true;
       const s = sheets.find(s => s.id === sheet.id);
       if (s) { s.name = nameEl.value.trim() || s.name; nameEl.value = s.name; }
-      saveData(); renderTabs();
+      schedulePush(); renderTabs();
     });
     nameEl.addEventListener('keydown', e => {
       if (e.key === 'Enter') nameEl.blur();
@@ -607,26 +700,18 @@ function renderTabs() {
     });
 
     const closeBtn = document.createElement('button');
-    closeBtn.className = 'tab-close';
-    closeBtn.innerHTML = '✕';
-    closeBtn.title = 'Delete sheet';
+    closeBtn.className = 'tab-close'; closeBtn.innerHTML = '✕'; closeBtn.title = 'Delete sheet';
     closeBtn.addEventListener('click', e => { e.stopPropagation(); deleteSheet(sheet.id); });
 
-    tab.appendChild(nameEl);
-    tab.appendChild(closeBtn);
-    tab.addEventListener('click', e => {
-      if (e.target === closeBtn) return;
-      if (sheet.id !== activeId) switchSheet(sheet.id, false);
-    });
-
+    tab.appendChild(nameEl); tab.appendChild(closeBtn);
+    tab.addEventListener('click', e => { if (e.target === closeBtn) return; if (sheet.id !== activeId) switchSheet(sheet.id); });
     bar.insertBefore(tab, newBtn);
   });
 }
 
 function loadSheetRows() {
   const sheet = sheets.find(s => s.id === activeId);
-  $tbody().innerHTML = '';
-  rowCount = 0;
+  $tbody().innerHTML = ''; rowCount = 0;
   if (!sheet) return;
   if (!sheet.rows || sheet.rows.length === 0) {
     for (let i = 0; i < 5; i++) buildRow(i === 0, true);
@@ -643,54 +728,15 @@ function loadSheetRows() {
 }
 
 /* ═══════════════════════════════════
-   SAVE / LOAD
-═══════════════════════════════════ */
-function saveData() {
-  if (activeId) {
-    const cur = sheets.find(s => s.id === activeId);
-    if (cur) cur.rows = captureRows();
-  }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ sheets, activeId }));
-  showSaved();
-}
-
-function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveData, 400); }
-
-function showSaved() {
-  const b = document.getElementById('save-badge');
-  b.classList.add('visible');
-  clearTimeout(b._t);
-  b._t = setTimeout(() => b.classList.remove('visible'), 1800);
-}
-
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    if (!data.sheets || !data.sheets.length) return false;
-    sheets = data.sheets;
-    activeId = data.activeId || sheets[0].id;
-    renderTabs();
-    loadSheetRows();
-    return true;
-  } catch(e) { return false; }
-}
-
-function saveThresh() { localStorage.setItem(THRESH_KEY, document.getElementById('low-stock-thresh').value); }
-function loadThresh() { const v = localStorage.getItem(THRESH_KEY); if (v !== null) document.getElementById('low-stock-thresh').value = v; }
-
-/* ═══════════════════════════════════
    CLEAR
 ═══════════════════════════════════ */
 function clearAll() {
-  if (!confirm('Clear all rows in this sheet? You can undo this!')) return;
+  if (!confirm('Clear all rows in this sheet?')) return;
   snapshot('clear sheet');
-  $tbody().innerHTML = '';
-  rowCount = 0;
+  $tbody().innerHTML = ''; rowCount = 0;
   clearSearch();
   for (let i = 0; i < 5; i++) buildRow(i === 0, true);
-  reindex(); recalcAll(); updateEmpty(); saveData();
+  reindex(); recalcAll(); updateEmpty(); schedulePush();
 }
 
 /* ═══════════════════════════════════
@@ -705,8 +751,7 @@ function handleSearch() {
 function clearSearch() {
   document.getElementById('search-input').value = '';
   document.getElementById('search-clear').style.display = 'none';
-  searchQuery = '';
-  applySearch();
+  searchQuery = ''; applySearch();
 }
 
 function applySearch() {
@@ -724,12 +769,10 @@ function applySearch() {
   if (searchQuery) {
     info.innerHTML = `<span class="match">${visible}</span> of ${rows.length} match`;
     noRes.style.display = visible === 0 ? 'block' : 'none';
-    if (visible === 0) document.getElementById('no-results-msg').textContent = `No items match "${searchQuery}"`;
-    document.getElementById('table').style.display = visible === 0 ? 'none' : '';
+    if (visible === 0) { document.getElementById('no-results-msg').textContent = `No items match "${searchQuery}"`; document.getElementById('table').style.display = 'none'; }
+    else document.getElementById('table').style.display = '';
   } else {
-    info.innerHTML = '';
-    noRes.style.display = 'none';
-    updateEmpty();
+    info.innerHTML = ''; noRes.style.display = 'none'; updateEmpty();
   }
 }
 
@@ -738,19 +781,24 @@ function applySearch() {
 ═══════════════════════════════════ */
 function addRow(focus = true) {
   const tr = buildRow(focus, false);
-  if (!focus) return tr;
-  snapshot('add row');
-  scheduleSave();
+  if (focus) { snapshot('add row'); schedulePush(); }
   return tr;
 }
+
+// Make addRow global
+window.addRow = addRow;
+window.clearAll = clearAll;
+window.newSheet = newSheet;
+window.undo = undo;
+window.handleSearch = handleSearch;
+window.clearSearch = clearSearch;
 
 function buildRow(focus = true, silent = false) {
   rowCount++;
   const tr = document.createElement('tr');
 
   const tdIdx = document.createElement('td');
-  tdIdx.className = 'td-idx';
-  tdIdx.textContent = rowCount;
+  tdIdx.className = 'td-idx'; tdIdx.textContent = rowCount;
   tr.appendChild(tdIdx);
 
   const inpCode = inp('ci ci-code', 'e.g. SKU-001', 'text');
@@ -761,20 +809,14 @@ function buildRow(focus = true, silent = false) {
   tr.appendChild(wrap(inpQty));  tr.appendChild(wrap(inpSold));
 
   const tdRem = document.createElement('td');
-  tdRem.className = 'td-rem empty';
-  tdRem.textContent = '—';
+  tdRem.className = 'td-rem empty'; tdRem.textContent = '—';
   tr.appendChild(tdRem);
 
   const tdDel = document.createElement('td');
   tdDel.className = 'td-del';
   const btnDel = document.createElement('button');
-  btnDel.className = 'btn-del';
-  btnDel.innerHTML = '✕';
-  btnDel.title = 'Delete row';
-  btnDel.onclick = () => {
-    snapshot('delete row');
-    tr.remove(); reindex(); recalcAll(); applySearch(); saveData();
-  };
+  btnDel.className = 'btn-del'; btnDel.innerHTML = '✕'; btnDel.title = 'Delete row';
+  btnDel.onclick = () => { snapshot('delete row'); tr.remove(); reindex(); recalcAll(); applySearch(); schedulePush(); };
   tdDel.appendChild(btnDel);
   tr.appendChild(tdDel);
 
@@ -782,13 +824,12 @@ function buildRow(focus = true, silent = false) {
 
   const inputs = [inpCode, inpName, inpQty, inpSold];
   let snapTimer = null;
-
   const schedSnap = (label) => { clearTimeout(snapTimer); snapTimer = setTimeout(() => snapshot(label), 1000); };
 
-  inpQty.addEventListener('input',  () => { calcRow(tr); recalcAll(); scheduleSave(); });
-  inpSold.addEventListener('input', () => { calcRow(tr); recalcAll(); scheduleSave(); });
-  inpCode.addEventListener('input', () => { scheduleSave(); applySearch(); });
-  inpName.addEventListener('input', () => { scheduleSave(); applySearch(); });
+  inpQty.addEventListener('input',  () => { calcRow(tr); recalcAll(); schedulePush(); });
+  inpSold.addEventListener('input', () => { calcRow(tr); recalcAll(); schedulePush(); });
+  inpCode.addEventListener('input', () => { schedulePush(); applySearch(); });
+  inpName.addEventListener('input', () => { schedulePush(); applySearch(); });
   inpCode.addEventListener('focus', () => schedSnap('edit code'));
   inpName.addEventListener('focus', () => schedSnap('edit name'));
   inpQty.addEventListener('focus',  () => schedSnap('edit quantity'));
@@ -830,56 +871,46 @@ function calcRow(tr) {
   const qv = ins[2].value.trim(), sv = ins[3].value.trim();
   const tdRem = tr.querySelector('.td-rem');
   const thresh = parseFloat(document.getElementById('low-stock-thresh').value) || 0;
-
-  if (qv === '' && sv === '') {
-    tdRem.className = 'td-rem empty'; tdRem.textContent = '—';
-    tr.classList.remove('low-stock', 'warn-stock'); return 0;
-  }
-
-  const qty = parseFloat(qv) || 0, sold = parseFloat(sv) || 0, rem = qty - sold;
-  tr.classList.remove('low-stock', 'warn-stock');
-  if (rem <= thresh && (qv !== '' || sv !== '')) {
+  if (qv === '' && sv === '') { tdRem.className = 'td-rem empty'; tdRem.textContent = '—'; tr.classList.remove('low-stock','warn-stock'); return 0; }
+  const qty = parseFloat(qv)||0, sold = parseFloat(sv)||0, rem = qty - sold;
+  tr.classList.remove('low-stock','warn-stock');
+  if (rem <= thresh && (qv||sv)) {
     if (rem <= thresh * 0.5 || rem <= 0) { tr.classList.add('low-stock'); tdRem.className = 'td-rem neg'; }
     else { tr.classList.add('warn-stock'); tdRem.className = 'td-rem warn'; }
-  } else {
-    tdRem.className = 'td-rem ' + (rem > 0 ? 'pos' : rem < 0 ? 'neg' : 'zero');
-  }
+  } else { tdRem.className = 'td-rem ' + (rem > 0 ? 'pos' : rem < 0 ? 'neg' : 'zero'); }
   tdRem.textContent = fmt(rem);
   return rem;
 }
 
 function recalcAll() {
-  let tQ = 0, tS = 0, tR = 0, low = 0;
-  const thresh = parseFloat(document.getElementById('low-stock-thresh').value) || 0;
+  let tQ=0,tS=0,tR=0,low=0;
+  const thresh = parseFloat(document.getElementById('low-stock-thresh').value)||0;
   $tbody().querySelectorAll('tr').forEach(tr => {
     const ins = tr.querySelectorAll('input.ci');
-    tQ += parseFloat(ins[2].value) || 0;
-    tS += parseFloat(ins[3].value) || 0;
+    tQ += parseFloat(ins[2].value)||0; tS += parseFloat(ins[3].value)||0;
     const r = calcRow(tr); tR += r;
-    if ((ins[2].value.trim() || ins[3].value.trim()) && r <= thresh) low++;
+    if ((ins[2].value.trim()||ins[3].value.trim()) && r <= thresh) low++;
   });
   const n = $tbody().querySelectorAll('tr').length;
   document.getElementById('c-rows').textContent  = n;
   document.getElementById('c-qty').textContent   = fmt(tQ);
   document.getElementById('c-sold').textContent  = fmt(tS);
-  const cRem = document.getElementById('c-rem');
-  cRem.textContent = fmt(tR); cRem.className = 'val' + (tR < 0 ? ' neg' : '');
+  const cRem = document.getElementById('c-rem'); cRem.textContent = fmt(tR); cRem.className = 'val'+(tR<0?' neg':'');
   document.getElementById('c-low').textContent   = low;
   document.getElementById('s-rows').textContent  = n;
   document.getElementById('s-qty').textContent   = fmt(tQ);
   document.getElementById('s-sold').textContent  = fmt(tS);
   document.getElementById('s-rem').textContent   = fmt(tR);
   document.getElementById('s-low').textContent   = low;
-
   if (low > 0) {
     clearTimeout(lowTimer);
-    showToast('low-stock-toast', `⚠ ${low} item${low > 1 ? 's' : ''} below threshold (≤${thresh})`);
+    showToast('low-stock-toast', `⚠ ${low} item${low>1?'s':''} below threshold (≤${thresh})`);
     lowTimer = setTimeout(() => document.getElementById('low-stock-toast').classList.remove('visible'), 3500);
   }
 }
 
 function reindex() {
-  $tbody().querySelectorAll('tr').forEach((tr, i) => tr.querySelector('.td-idx').textContent = i + 1);
+  $tbody().querySelectorAll('tr').forEach((tr,i) => tr.querySelector('.td-idx').textContent = i+1);
   rowCount = $tbody().querySelectorAll('tr').length;
   updateEmpty();
 }
@@ -889,48 +920,33 @@ function updateEmpty() {
   if (!searchQuery) {
     document.getElementById('table').style.display       = has ? '' : 'none';
     document.getElementById('empty-state').style.display = has ? 'none' : 'block';
-  } else {
-    document.getElementById('empty-state').style.display = 'none';
-  }
+  } else { document.getElementById('empty-state').style.display = 'none'; }
 }
 
-/* ═══════════════════════════════════
-   TOASTS
-═══════════════════════════════════ */
+function saveThresh() { localStorage.setItem(THRESH_KEY, document.getElementById('low-stock-thresh').value); schedulePush(); }
+window.saveThresh = saveThresh;
+
 function showToast(id, msg) {
-  const t = document.getElementById(id);
-  t.textContent = msg;
-  t.classList.add('visible');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('visible'), 2500);
+  const t = document.getElementById(id); t.textContent = msg; t.classList.add('visible');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('visible'), 2500);
 }
 
-/* ═══════════════════════════════════
-   HELPERS
-═══════════════════════════════════ */
-function fmt(n) { return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 4 }); }
+function fmt(n) { return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined,{maximumFractionDigits:4}); }
 function inp(cls, ph, type) {
   const i = document.createElement('input');
   i.type = type; i.className = cls; i.placeholder = ph;
-  if (type === 'number') { i.min = '0'; i.step = 'any'; }
-  i.autocomplete = 'off'; i.spellcheck = false;
-  return i;
+  if (type === 'number') { i.min='0'; i.step='any'; }
+  i.autocomplete='off'; i.spellcheck=false; return i;
 }
 function wrap(input) { const td = document.createElement('td'); td.appendChild(input); return td; }
 
 /* ═══════════════════════════════════
    INIT
 ═══════════════════════════════════ */
-loadThresh();
-if (!loadData()) {
-  ['Sheet 1', 'Sheet 2', 'Sheet 3'].forEach((n, i) => {
-    const id = uid();
-    sheets.push({ id, name: n, rows: [] });
-  });
-  activeId = sheets[0].id;
-  renderTabs();
-  loadSheetRows();
-}
+const savedThresh = localStorage.getItem(THRESH_KEY);
+if (savedThresh) document.getElementById('low-stock-thresh').value = savedThresh;
+setConnStatus('syncing');
+startListening();
 refreshUndoBtn();
 </script>
 </body>
