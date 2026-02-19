@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>∞ Inventory Sheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0e0f11;
+    --surface: #13151a;
+    --surface2: #1a1d24;
+    --border: #252830;
+    --border-light: #1e2028;
+    --accent: #00e5a0;
+    --text: #dde1ea;
+    --text-dim: #5a6070;
+    --text-muted: #30343e;
+    --header-bg: #0e0f11;
+    --row-hover: rgba(255,255,255,0.018);
+    --row-alt: rgba(255,255,255,0.008);
+    --rem-pos: #34d399;
+    --rem-neg: #f87171;
+    --warn: #fbbf24;
+    --col-idx: 50px;
+    --col-code: 120px;
+    --col-name: 230px;
+    --col-num: 140px;
+    --col-rem: 140px;
+    --col-del: 40px;
+    --row-h: 40px;
+    --header-h: 46px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* TOP BAR */
+  #topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 54px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 16px;
+  }
+  #logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  #logo span {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .chip .lbl { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.7px; font-size: 9px; }
+  .chip .val { color: var(--accent); font-weight: 600; }
+  .chip .val.neg { color: var(--rem-neg); }
+  .chip-warn { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+  .chip-warn .lbl { color: rgba(251,191,36,0.6); }
+  .chip-warn .val { color: var(--warn); }
+
+  /* BUTTONS */
+  #btn-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: var(--accent);
+    color: #0a0b0d;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  #btn-add:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .ghost-btn {
+    padding: 7px 14px;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #btn-clear:hover { color: var(--rem-neg); border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.07); }
+  #btn-undo:hover:not(:disabled) { color: var(--accent); border-color: rgba(0,229,160,0.4); background: rgba(0,229,160,0.07); }
+  #btn-undo:disabled { opacity: 0.28; cursor: not-allowed; }
+  .undo-badge {
+    background: rgba(0,229,160,0.18);
+    color: var(--accent);
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    display: none;
+  }
+
+  /* TABS */
+  #tabs-bar {
+    display: flex;
+    align-items: stretch;
+    padding: 0 16px;
+    height: 38px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 3px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  #tabs-bar::-webkit-scrollbar { height: 3px; }
+  #tabs-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 12px;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-dim);
+    border: 1px solid transparent;
+    border-bottom: none;
+    white-space: nowrap;
+    position: relative;
+    bottom: -1px;
+    transition: color 0.12s, background 0.12s;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); font-weight: 600; }
+
+  .tab-name {
+    outline: none;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: inherit;
+    cursor: pointer;
+    min-width: 50px;
+    max-width: 130px;
+    pointer-events: none;
+  }
+  .tab.active .tab-name { pointer-events: auto; cursor: text; }
+  .tab-name:focus { outline: 1px solid rgba(0,229,160,0.4); border-radius: 3px; padding: 1px 4px; }
+
+  .tab-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 10px;
+    padding: 2px 3px;
+    border-radius: 3px;
+    line-height: 1;
+    transition: color 0.1s, background 0.1s;
+    opacity: 0;
+  }
+  .tab:hover .tab-close, .tab.active .tab-close { opacity: 1; }
+  .tab-close:hover { color: var(--rem-neg); background: rgba(248,113,113,0.15); }
+
+  #btn-new-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    margin-bottom: 1px;
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 6px 6px 0 0;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s;
+    flex-shrink: 0;
+  }
+  #btn-new-tab:hover { color: var(--accent); border-color: rgba(0,229,160,0.3); }
+
+  /* SEARCH */
+  #search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #search-wrap { position: relative; flex: 1; max-width: 380px; }
+  #search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
+  #search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 7px 28px 7px 32px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    caret-color: var(--accent);
+  }
+  #search-input::placeholder { color: var(--text-muted); }
+  #search-input:focus { border-color: rgba(0,229,160,0.4); box-shadow: 0 0 0 2px rgba(0,229,160,0.10); }
+  #search-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 12px; padding: 2px 4px; border-radius: 3px; display: none;
+  }
+  #search-clear:hover { color: var(--text); }
+  .search-info { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+  .search-info .match { color: var(--accent); font-weight: 600; }
+
+  #low-stock-wrap { display: flex; align-items: center; gap: 8px; margin-left: auto; white-space: nowrap; }
+  #low-stock-wrap label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.7px; }
+  #low-stock-thresh {
+    width: 64px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; outline: none; color: var(--warn);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    padding: 5px 8px; text-align: center; transition: border-color 0.15s; caret-color: var(--warn);
+  }
+  #low-stock-thresh:focus { border-color: rgba(251,191,36,0.5); }
+
+  /* SHEET */
+  #sheet-wrapper { flex: 1; overflow: auto; position: relative; }
+  #sheet-wrapper::-webkit-scrollbar { width: 8px; height: 8px; }
+  #sheet-wrapper::-webkit-scrollbar-track { background: var(--surface); }
+  #sheet-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  #sheet-wrapper::-webkit-scrollbar-thumb:hover { background: #3a3e4a; }
+  #sheet-wrapper::-webkit-scrollbar-corner { background: var(--surface); }
+
+  table { border-collapse: collapse; width: 100%; }
+  thead { position: sticky; top: 0; z-index: 20; }
+  thead tr { background: var(--header-bg); border-bottom: 2px solid var(--border); }
+  th {
+    height: var(--header-h); padding: 0 12px;
+    font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 1.2px; color: var(--text-dim); text-transform: uppercase;
+    text-align: left; border-right: 1px solid var(--border-light); user-select: none; white-space: nowrap;
+  }
+  th:last-child { border-right: none; }
+  th.th-idx  { width: var(--col-idx); text-align: center; color: var(--text-muted); }
+  th.th-code { width: var(--col-code); }
+  th.th-name { width: var(--col-name); }
+  th.th-qty  { width: var(--col-num); text-align: right; }
+  th.th-sold { width: var(--col-num); text-align: right; }
+  th.th-rem  { width: var(--col-rem); text-align: right; color: var(--accent); }
+  th.th-del  { width: var(--col-del); }
+
+  tbody tr { border-bottom: 1px solid var(--border-light); transition: background 0.08s; }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr:focus-within { background: rgba(0,229,160,0.025); }
+
+  tbody tr.low-stock { border-left: 3px solid var(--rem-neg) !important; background: rgba(248,113,113,0.045) !important; }
+  tbody tr.low-stock:hover { background: rgba(248,113,113,0.07) !important; }
+  tbody tr.low-stock .td-idx::after {
+    content: '!'; display: inline-block; margin-left: 3px;
+    color: var(--rem-neg); font-weight: 700; font-size: 11px;
+    animation: pulse-warn 1.6s ease-in-out infinite;
+  }
+  tbody tr.warn-stock { border-left: 3px solid var(--warn) !important; background: rgba(251,191,36,0.03) !important; }
+  tbody tr.warn-stock:hover { background: rgba(251,191,36,0.06) !important; }
+  @keyframes pulse-warn { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+  tbody tr.hidden-row { display: none; }
+
+  @keyframes undo-flash { 0%{background:rgba(0,229,160,0.2)}100%{background:transparent} }
+  tbody tr.undo-flash { animation: undo-flash 0.6s ease forwards; }
+
+  td {
+    padding: 0 6px; height: var(--row-h);
+    border-right: 1px solid var(--border-light); vertical-align: middle;
+  }
+  td:last-child { border-right: none; }
+  td.td-idx { text-align: center; font-size: 10px; color: var(--text-muted); font-weight: 600; user-select: none; }
+
+  input.ci {
+    width: 100%; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    padding: 5px 8px; border-radius: 5px; transition: background 0.12s, box-shadow 0.12s; caret-color: var(--accent);
+  }
+  input.ci::placeholder { color: var(--text-muted); font-size: 11px; }
+  input.ci:focus { background: rgba(0,229,160,0.06); box-shadow: 0 0 0 1.5px rgba(0,229,160,0.30); }
+  input.ci.ci-code { font-weight: 600; letter-spacing: 0.5px; color: #c4b5fd; }
+  input.ci.ci-num  { text-align: right; color: #93c5fd; }
+
+  td.td-rem { text-align: right; padding: 0 14px; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; transition: color 0.2s; }
+  td.td-rem.empty { color: var(--text-muted); }
+  td.td-rem.pos   { color: var(--rem-pos); }
+  td.td-rem.neg   { color: var(--rem-neg); }
+  td.td-rem.zero  { color: var(--text-dim); }
+  td.td-rem.warn  { color: var(--warn); }
+
+  td.td-del { text-align: center; }
+  .btn-del { background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 7px;border-radius:4px;font-size:13px;transition:color 0.1s,background 0.1s;opacity:0; }
+  tr:hover .btn-del,tr:focus-within .btn-del{opacity:1}
+  .btn-del:hover{color:var(--rem-neg);background:rgba(248,113,113,0.12)}
+
+  #empty-state { text-align:center;padding:70px 20px;color:var(--text-muted);display:none; }
+  #empty-state p { font-size:15px;margin-bottom:8px;color:var(--text-dim); }
+  #empty-state small { font-size:11px; }
+
+  #no-results { display:none;text-align:center;padding:50px 20px;color:var(--text-muted); }
+  #no-results p { font-size:14px;color:var(--text-dim); }
+
+  /* STATUS BAR */
+  #status-bar {
+    display: flex; align-items: center; gap: 20px; padding: 0 20px;
+    height: 32px; background: var(--surface); border-top: 1px solid var(--border);
+    flex-shrink: 0; font-size: 11px; color: var(--text-dim);
+  }
+  .sb { display:flex;align-items:center;gap:5px; }
+  .sb-lbl { color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:0.6px; }
+  .sb-val { color:var(--accent);font-weight:600; }
+  .sb-val.warn { color:var(--warn); }
+  .sb-hint { margin-left:auto;font-size:10px;color:var(--text-muted); }
+
+  /* TOASTS */
+  #save-badge {
+    position:fixed;bottom:44px;right:16px;padding:6px 14px;
+    background:rgba(0,229,160,0.15);border:1px solid rgba(0,229,160,0.35);border-radius:20px;
+    color:var(--accent);font-size:11px;font-weight:600;letter-spacing:0.5px;
+    opacity:0;transform:translateY(6px);transition:opacity 0.2s,transform 0.2s;pointer-events:none;z-index:999;
+  }
+  #save-badge.visible{opacity:1;transform:translateY(0)}
+
+  .toast {
+    position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(10px);
+    border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;
+    opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;z-index:998;white-space:nowrap;
+  }
+  .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+  #undo-toast { background:rgba(0,229,160,0.12);border:1px solid rgba(0,229,160,0.35);color:var(--accent); }
+  #low-stock-toast { background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--rem-neg);z-index:997; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div id="logo">∞ Inventory <span>LIVE SHEET</span></div>
+  <div id="topbar-right">
+    <div class="chip"><span class="lbl">Rows</span><span class="val" id="c-rows">0</span></div>
+    <div class="chip"><span class="lbl">Total Qty</span><span class="val" id="c-qty">0</span></div>
+    <div class="chip"><span class="lbl">Total Sold</span><span class="val" id="c-sold">0</span></div>
+    <div class="chip"><span class="lbl">Remaining</span><span class="val" id="c-rem">0</span></div>
+    <div class="chip chip-warn"><span class="lbl">⚠ Low Stock</span><span class="val" id="c-low">0</span></div>
+    <button id="btn-undo" class="ghost-btn" onclick="undo()" disabled title="Undo (Ctrl+Z)">
+      ↩ Undo <span class="undo-badge" id="undo-badge">0</span>
+    </button>
+    <button id="btn-clear" class="ghost-btn" onclick="clearAll()">✕ Clear Sheet</button>
+    <button id="btn-add" onclick="addRow()">＋ Add Row</button>
+  </div>
+</div>
+
+<div id="tabs-bar">
+  <button id="btn-new-tab" onclick="newSheet()" title="New sheet">＋</button>
+</div>
+
+<div id="search-bar">
+  <div id="search-wrap">
+    <span id="search-icon">⌕</span>
+    <input type="text" id="search-input" placeholder="Search by code or name…" oninput="handleSearch()" autocomplete="off" spellcheck="false">
+    <button id="search-clear" onclick="clearSearch()" title="Clear">✕</button>
+  </div>
+  <span class="search-info" id="search-info"></span>
+  <div id="low-stock-wrap">
+    <label for="low-stock-thresh">⚠ Alert below</label>
+    <input type="number" id="low-stock-thresh" value="10" min="0" step="1" oninput="recalcAll();saveThresh()">
+    <label style="font-size:10px;color:var(--text-muted)">units</label>
+  </div>
+</div>
+
+<div id="sheet-wrapper">
+  <table id="table">
+    <thead>
+      <tr>
+        <th class="th-idx">#</th>
+        <th class="th-code">Code</th>
+        <th class="th-name">Name</th>
+        <th class="th-qty">Quantity</th>
+        <th class="th-sold">Sold</th>
+        <th class="th-rem">Remaining</th>
+        <th class="th-del"></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div id="no-results"><p>No results found</p><small id="no-results-msg"></small></div>
+  <div id="empty-state">
+    <p>No rows yet</p>
+    <small>Click <strong style="color:var(--accent)">＋ Add Row</strong> to start</small>
+  </div>
+</div>
+
+<div id="status-bar">
+  <div class="sb"><span class="sb-lbl">Items</span><span class="sb-val" id="s-rows">0</span></div>
+  <div class="sb"><span class="sb-lbl">Total Qty</span><span class="sb-val" id="s-qty">0</span></div>
+  <div class="sb"><span class="sb-lbl">Total Sold</span><span class="sb-val" id="s-sold">0</span></div>
+  <div class="sb"><span class="sb-lbl">Total Remaining</span><span class="sb-val" id="s-rem">0</span></div>
+  <div class="sb"><span class="sb-lbl">⚠ Low</span><span class="sb-val warn" id="s-low">0</span></div>
+  <span class="sb-hint">TAB/ENTER → next &nbsp;·&nbsp; ↑↓ → move rows &nbsp;·&nbsp; Ctrl+Z → undo &nbsp;·&nbsp; Dbl-click tab → rename</span>
+</div>
+
+<div id="save-badge">✓ Saved</div>
+<div id="undo-toast" class="toast"></div>
+<div id="low-stock-toast" class="toast"></div>
+
+<script>
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+const STORAGE_KEY = 'inv_sheets_v3';
+const THRESH_KEY  = 'inv_thresh_v1';
+const MAX_UNDO    = 20;
+
+let sheets        = [];
+let activeId      = null;
+let undoStack     = [];
+let rowCount      = 0;
+let searchQuery   = '';
+let saveTimer     = null;
+let lowTimer      = null;
+
+const $tbody = () => document.getElementById('tbody');
+
+/* ═══════════════════════════════════
+   UNDO
+═══════════════════════════════════ */
+function snapshot(label) {
+  undoStack.push({ id: activeId, label: label || 'action', rows: captureRows() });
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+  refreshUndoBtn();
+}
+
+function captureRows() {
+  return Array.from($tbody().querySelectorAll('tr')).map(tr => {
+    const ins = tr.querySelectorAll('input.ci');
+    return { code: ins[0].value, name: ins[1].value, qty: ins[2].value, sold: ins[3].value };
+  });
+}
+
+function undo() {
+  if (!undoStack.length) return;
+  const state = undoStack.pop();
+  refreshUndoBtn();
+
+  if (state.id !== activeId) switchSheet(state.id, false);
+
+  $tbody().innerHTML = '';
+  rowCount = 0;
+  state.rows.forEach(r => {
+    const tr = buildRow(false, true);
+    const ins = tr.querySelectorAll('input.ci');
+    ins[0].value = r.code; ins[1].value = r.name;
+    ins[2].value = r.qty;  ins[3].value = r.sold;
+    calcRow(tr);
+  });
+  reindex(); recalcAll(); applySearch(); saveData();
+
+  $tbody().querySelectorAll('tr').forEach(tr => {
+    tr.classList.remove('undo-flash');
+    void tr.offsetWidth;
+    tr.classList.add('undo-flash');
+  });
+
+  showToast('undo-toast', `↩ Undid: ${state.label}`);
+}
+
+function refreshUndoBtn() {
+  const btn = document.getElementById('btn-undo');
+  const badge = document.getElementById('undo-badge');
+  btn.disabled = !undoStack.length;
+  badge.style.display = undoStack.length ? 'inline' : 'none';
+  badge.textContent = undoStack.length;
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+});
+
+/* ═══════════════════════════════════
+   SHEETS
+═══════════════════════════════════ */
+function uid() { return 'sh_' + Math.random().toString(36).slice(2, 8); }
+
+function newSheet(name, switchTo = true) {
+  const id = uid();
+  sheets.push({ id, name: name || `Sheet ${sheets.length + 1}`, rows: [] });
+  renderTabs();
+  if (switchTo) switchSheet(id);
+  else saveData();
+  return id;
+}
+
+function switchSheet(id, snap = false) {
+  // Save current before switch
+  if (activeId) {
+    const cur = sheets.find(s => s.id === activeId);
+    if (cur) cur.rows = captureRows();
+  }
+  activeId = id;
+  renderTabs();
+  loadSheetRows();
+  clearSearch();
+}
+
+function deleteSheet(id) {
+  if (sheets.length <= 1) { alert('You need at least one sheet.'); return; }
+  if (!confirm('Delete this sheet and all its data?')) return;
+  snapshot('delete sheet');
+  const idx = sheets.findIndex(s => s.id === id);
+  sheets.splice(idx, 1);
+  if (activeId === id) {
+    activeId = null;
+    switchSheet(sheets[Math.max(0, idx - 1)].id, false);
+  }
+  renderTabs();
+  saveData();
+}
+
+function renderTabs() {
+  const bar = document.getElementById('tabs-bar');
+  bar.querySelectorAll('.tab').forEach(t => t.remove());
+  const newBtn = document.getElementById('btn-new-tab');
+
+  sheets.forEach(sheet => {
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (sheet.id === activeId ? ' active' : '');
+
+    const nameEl = document.createElement('input');
+    nameEl.type = 'text';
+    nameEl.className = 'tab-name';
+    nameEl.value = sheet.name;
+    nameEl.readOnly = true;
+    nameEl.title = 'Double-click to rename';
+
+    nameEl.addEventListener('dblclick', () => {
+      if (sheet.id !== activeId) return;
+      nameEl.readOnly = false;
+      nameEl.focus(); nameEl.select();
+    });
+    nameEl.addEventListener('blur', () => {
+      nameEl.readOnly = true;
+      const s = sheets.find(s => s.id === sheet.id);
+      if (s) { s.name = nameEl.value.trim() || s.name; nameEl.value = s.name; }
+      saveData(); renderTabs();
+    });
+    nameEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter') nameEl.blur();
+      if (e.key === 'Escape') { nameEl.value = sheet.name; nameEl.blur(); }
+    });
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'tab-close';
+    closeBtn.innerHTML = '✕';
+    closeBtn.title = 'Delete sheet';
+    closeBtn.addEventListener('click', e => { e.stopPropagation(); deleteSheet(sheet.id); });
+
+    tab.appendChild(nameEl);
+    tab.appendChild(closeBtn);
+    tab.addEventListener('click', e => {
+      if (e.target === closeBtn) return;
+      if (sheet.id !== activeId) switchSheet(sheet.id, false);
+    });
+
+    bar.insertBefore(tab, newBtn);
+  });
+}
+
+function loadSheetRows() {
+  const sheet = sheets.find(s => s.id === activeId);
+  $tbody().innerHTML = '';
+  rowCount = 0;
+  if (!sheet) return;
+  if (!sheet.rows || sheet.rows.length === 0) {
+    for (let i = 0; i < 5; i++) buildRow(i === 0, true);
+  } else {
+    sheet.rows.forEach(r => {
+      const tr = buildRow(false, true);
+      const ins = tr.querySelectorAll('input.ci');
+      ins[0].value = r.code || ''; ins[1].value = r.name || '';
+      ins[2].value = r.qty  || ''; ins[3].value = r.sold || '';
+      calcRow(tr);
+    });
+  }
+  reindex(); recalcAll(); updateEmpty();
+}
+
+/* ═══════════════════════════════════
+   SAVE / LOAD
+═══════════════════════════════════ */
+function saveData() {
+  if (activeId) {
+    const cur = sheets.find(s => s.id === activeId);
+    if (cur) cur.rows = captureRows();
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ sheets, activeId }));
+  showSaved();
+}
+
+function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveData, 400); }
+
+function showSaved() {
+  const b = document.getElementById('save-badge');
+  b.classList.add('visible');
+  clearTimeout(b._t);
+  b._t = setTimeout(() => b.classList.remove('visible'), 1800);
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    if (!data.sheets || !data.sheets.length) return false;
+    sheets = data.sheets;
+    activeId = data.activeId || sheets[0].id;
+    renderTabs();
+    loadSheetRows();
+    return true;
+  } catch(e) { return false; }
+}
+
+function saveThresh() { localStorage.setItem(THRESH_KEY, document.getElementById('low-stock-thresh').value); }
+function loadThresh() { const v = localStorage.getItem(THRESH_KEY); if (v !== null) document.getElementById('low-stock-thresh').value = v; }
+
+/* ═══════════════════════════════════
+   CLEAR
+═══════════════════════════════════ */
+function clearAll() {
+  if (!confirm('Clear all rows in this sheet? You can undo this!')) return;
+  snapshot('clear sheet');
+  $tbody().innerHTML = '';
+  rowCount = 0;
+  clearSearch();
+  for (let i = 0; i < 5; i++) buildRow(i === 0, true);
+  reindex(); recalcAll(); updateEmpty(); saveData();
+}
+
+/* ═══════════════════════════════════
+   SEARCH
+═══════════════════════════════════ */
+function handleSearch() {
+  searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+  document.getElementById('search-clear').style.display = searchQuery ? 'block' : 'none';
+  applySearch();
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  searchQuery = '';
+  applySearch();
+}
+
+function applySearch() {
+  const rows = $tbody().querySelectorAll('tr');
+  let visible = 0;
+  rows.forEach(tr => {
+    if (!searchQuery) { tr.classList.remove('hidden-row'); visible++; return; }
+    const ins = tr.querySelectorAll('input.ci');
+    const match = ins[0].value.toLowerCase().includes(searchQuery) || ins[1].value.toLowerCase().includes(searchQuery);
+    tr.classList.toggle('hidden-row', !match);
+    if (match) visible++;
+  });
+  const info = document.getElementById('search-info');
+  const noRes = document.getElementById('no-results');
+  if (searchQuery) {
+    info.innerHTML = `<span class="match">${visible}</span> of ${rows.length} match`;
+    noRes.style.display = visible === 0 ? 'block' : 'none';
+    if (visible === 0) document.getElementById('no-results-msg').textContent = `No items match "${searchQuery}"`;
+    document.getElementById('table').style.display = visible === 0 ? 'none' : '';
+  } else {
+    info.innerHTML = '';
+    noRes.style.display = 'none';
+    updateEmpty();
+  }
+}
+
+/* ═══════════════════════════════════
+   ROWS
+═══════════════════════════════════ */
+function addRow(focus = true) {
+  const tr = buildRow(focus, false);
+  if (!focus) return tr;
+  snapshot('add row');
+  scheduleSave();
+  return tr;
+}
+
+function buildRow(focus = true, silent = false) {
+  rowCount++;
+  const tr = document.createElement('tr');
+
+  const tdIdx = document.createElement('td');
+  tdIdx.className = 'td-idx';
+  tdIdx.textContent = rowCount;
+  tr.appendChild(tdIdx);
+
+  const inpCode = inp('ci ci-code', 'e.g. SKU-001', 'text');
+  const inpName = inp('ci', 'Product name', 'text');
+  const inpQty  = inp('ci ci-num', '0', 'number');
+  const inpSold = inp('ci ci-num', '0', 'number');
+  tr.appendChild(wrap(inpCode)); tr.appendChild(wrap(inpName));
+  tr.appendChild(wrap(inpQty));  tr.appendChild(wrap(inpSold));
+
+  const tdRem = document.createElement('td');
+  tdRem.className = 'td-rem empty';
+  tdRem.textContent = '—';
+  tr.appendChild(tdRem);
+
+  const tdDel = document.createElement('td');
+  tdDel.className = 'td-del';
+  const btnDel = document.createElement('button');
+  btnDel.className = 'btn-del';
+  btnDel.innerHTML = '✕';
+  btnDel.title = 'Delete row';
+  btnDel.onclick = () => {
+    snapshot('delete row');
+    tr.remove(); reindex(); recalcAll(); applySearch(); saveData();
+  };
+  tdDel.appendChild(btnDel);
+  tr.appendChild(tdDel);
+
+  $tbody().appendChild(tr);
+
+  const inputs = [inpCode, inpName, inpQty, inpSold];
+  let snapTimer = null;
+
+  const schedSnap = (label) => { clearTimeout(snapTimer); snapTimer = setTimeout(() => snapshot(label), 1000); };
+
+  inpQty.addEventListener('input',  () => { calcRow(tr); recalcAll(); scheduleSave(); });
+  inpSold.addEventListener('input', () => { calcRow(tr); recalcAll(); scheduleSave(); });
+  inpCode.addEventListener('input', () => { scheduleSave(); applySearch(); });
+  inpName.addEventListener('input', () => { scheduleSave(); applySearch(); });
+  inpCode.addEventListener('focus', () => schedSnap('edit code'));
+  inpName.addEventListener('focus', () => schedSnap('edit name'));
+  inpQty.addEventListener('focus',  () => schedSnap('edit quantity'));
+  inpSold.addEventListener('focus', () => schedSnap('edit sold'));
+
+  inputs.forEach((input, i) => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Tab' || e.key === 'Enter') {
+        e.preventDefault();
+        if (i < inputs.length - 1) inputs[i + 1].focus();
+        else {
+          const next = tr.nextElementSibling;
+          if (next) next.querySelectorAll('input.ci')[0].focus();
+          else { const r = addRow(false); r.querySelectorAll('input.ci')[0].focus(); }
+        }
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = tr.nextElementSibling;
+        if (next) (next.querySelectorAll('input.ci')[i] || next.querySelectorAll('input.ci')[0]).focus();
+        else { const r = addRow(false); r.querySelectorAll('input.ci')[i].focus(); }
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prev = tr.previousElementSibling;
+        if (prev) (prev.querySelectorAll('input.ci')[i] || prev.querySelectorAll('input.ci')[0]).focus();
+      }
+    });
+  });
+
+  updateEmpty();
+  if (!silent) recalcAll();
+  if (focus) inpCode.focus();
+  return tr;
+}
+
+function calcRow(tr) {
+  const ins = tr.querySelectorAll('input.ci');
+  const qv = ins[2].value.trim(), sv = ins[3].value.trim();
+  const tdRem = tr.querySelector('.td-rem');
+  const thresh = parseFloat(document.getElementById('low-stock-thresh').value) || 0;
+
+  if (qv === '' && sv === '') {
+    tdRem.className = 'td-rem empty'; tdRem.textContent = '—';
+    tr.classList.remove('low-stock', 'warn-stock'); return 0;
+  }
+
+  const qty = parseFloat(qv) || 0, sold = parseFloat(sv) || 0, rem = qty - sold;
+  tr.classList.remove('low-stock', 'warn-stock');
+  if (rem <= thresh && (qv !== '' || sv !== '')) {
+    if (rem <= thresh * 0.5 || rem <= 0) { tr.classList.add('low-stock'); tdRem.className = 'td-rem neg'; }
+    else { tr.classList.add('warn-stock'); tdRem.className = 'td-rem warn'; }
+  } else {
+    tdRem.className = 'td-rem ' + (rem > 0 ? 'pos' : rem < 0 ? 'neg' : 'zero');
+  }
+  tdRem.textContent = fmt(rem);
+  return rem;
+}
+
+function recalcAll() {
+  let tQ = 0, tS = 0, tR = 0, low = 0;
+  const thresh = parseFloat(document.getElementById('low-stock-thresh').value) || 0;
+  $tbody().querySelectorAll('tr').forEach(tr => {
+    const ins = tr.querySelectorAll('input.ci');
+    tQ += parseFloat(ins[2].value) || 0;
+    tS += parseFloat(ins[3].value) || 0;
+    const r = calcRow(tr); tR += r;
+    if ((ins[2].value.trim() || ins[3].value.trim()) && r <= thresh) low++;
+  });
+  const n = $tbody().querySelectorAll('tr').length;
+  document.getElementById('c-rows').textContent  = n;
+  document.getElementById('c-qty').textContent   = fmt(tQ);
+  document.getElementById('c-sold').textContent  = fmt(tS);
+  const cRem = document.getElementById('c-rem');
+  cRem.textContent = fmt(tR); cRem.className = 'val' + (tR < 0 ? ' neg' : '');
+  document.getElementById('c-low').textContent   = low;
+  document.getElementById('s-rows').textContent  = n;
+  document.getElementById('s-qty').textContent   = fmt(tQ);
+  document.getElementById('s-sold').textContent  = fmt(tS);
+  document.getElementById('s-rem').textContent   = fmt(tR);
+  document.getElementById('s-low').textContent   = low;
+
+  if (low > 0) {
+    clearTimeout(lowTimer);
+    showToast('low-stock-toast', `⚠ ${low} item${low > 1 ? 's' : ''} below threshold (≤${thresh})`);
+    lowTimer = setTimeout(() => document.getElementById('low-stock-toast').classList.remove('visible'), 3500);
+  }
+}
+
+function reindex() {
+  $tbody().querySelectorAll('tr').forEach((tr, i) => tr.querySelector('.td-idx').textContent = i + 1);
+  rowCount = $tbody().querySelectorAll('tr').length;
+  updateEmpty();
+}
+
+function updateEmpty() {
+  const has = $tbody().querySelectorAll('tr').length > 0;
+  if (!searchQuery) {
+    document.getElementById('table').style.display       = has ? '' : 'none';
+    document.getElementById('empty-state').style.display = has ? 'none' : 'block';
+  } else {
+    document.getElementById('empty-state').style.display = 'none';
+  }
+}
+
+/* ═══════════════════════════════════
+   TOASTS
+═══════════════════════════════════ */
+function showToast(id, msg) {
+  const t = document.getElementById(id);
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('visible'), 2500);
+}
+
+/* ═══════════════════════════════════
+   HELPERS
+═══════════════════════════════════ */
+function fmt(n) { return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 4 }); }
+function inp(cls, ph, type) {
+  const i = document.createElement('input');
+  i.type = type; i.className = cls; i.placeholder = ph;
+  if (type === 'number') { i.min = '0'; i.step = 'any'; }
+  i.autocomplete = 'off'; i.spellcheck = false;
+  return i;
+}
+function wrap(input) { const td = document.createElement('td'); td.appendChild(input); return td; }
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+loadThresh();
+if (!loadData()) {
+  ['Sheet 1', 'Sheet 2', 'Sheet 3'].forEach((n, i) => {
+    const id = uid();
+    sheets.push({ id, name: n, rows: [] });
+  });
+  activeId = sheets[0].id;
+  renderTabs();
+  loadSheetRows();
+}
+refreshUndoBtn();
+</script>
+</body>
+</html>
