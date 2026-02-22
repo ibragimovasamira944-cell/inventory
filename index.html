@@ -27,6 +27,7 @@
     --col-name: 230px;
     --col-num: 140px;
     --col-rem: 140px;
+    --col-sell: 60px;
     --col-del: 40px;
     --row-h: 40px;
     --header-h: 46px;
@@ -45,328 +46,147 @@
     overflow: hidden;
   }
 
-  /* SYNC INDICATOR */
-  #sync-indicator {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    z-index: 9999;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    opacity: 0;
-  }
-  #sync-indicator.syncing {
-    background: rgba(251,191,36,0.15);
-    border: 1px solid rgba(251,191,36,0.4);
-    color: var(--warn);
-    opacity: 1;
-  }
-  #sync-indicator.synced {
-    background: rgba(0,229,160,0.15);
-    border: 1px solid rgba(0,229,160,0.4);
-    color: var(--accent);
-    opacity: 1;
-  }
-  #sync-indicator.offline {
-    background: rgba(248,113,113,0.15);
-    border: 1px solid rgba(248,113,113,0.4);
-    color: var(--rem-neg);
-    opacity: 1;
-  }
-
   /* CONN DOT */
-  #conn-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    display: inline-block;
-    margin-right: 3px;
-    transition: background 0.3s;
-  }
-  #conn-dot.online  { background: var(--accent); box-shadow: 0 0 5px rgba(0,229,160,0.5); }
-  #conn-dot.offline { background: var(--rem-neg); }
-  #conn-dot.syncing { background: var(--warn); animation: pulse-dot 0.8s ease-in-out infinite; }
-  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  #conn-dot { width:7px;height:7px;border-radius:50%;background:var(--text-muted);display:inline-block;margin-right:3px;transition:background 0.3s; }
+  #conn-dot.online  { background:var(--accent);box-shadow:0 0 5px rgba(0,229,160,0.5); }
+  #conn-dot.offline { background:var(--rem-neg); }
+  #conn-dot.syncing { background:var(--warn);animation:pulse-dot 0.8s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:0.3} }
 
   /* TOP BAR */
   #topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    height: 54px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-    gap: 16px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;height:54px;background:var(--surface);
+    border-bottom:1px solid var(--border);flex-shrink:0;gap:16px;
   }
-  #logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    color: var(--accent);
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    white-space: nowrap;
-  }
-  #logo span {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--text-dim);
-    letter-spacing: 1.5px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  #topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .chip {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    border-radius: 6px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    font-size: 11px;
-    white-space: nowrap;
-  }
-  .chip .lbl { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.7px; font-size: 9px; }
-  .chip .val { color: var(--accent); font-weight: 600; }
-  .chip .val.neg { color: var(--rem-neg); }
-  .chip-warn { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
-  .chip-warn .lbl { color: rgba(251,191,36,0.6); }
-  .chip-warn .val { color: var(--warn); }
-  .chip-sync { cursor: default; }
+  #logo { font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--accent);letter-spacing:-0.5px;display:flex;align-items:baseline;gap:8px;white-space:nowrap; }
+  #logo span { font-size:10px;font-weight:500;color:var(--text-dim);letter-spacing:1.5px;font-family:'JetBrains Mono',monospace; }
+  #topbar-right { display:flex;align-items:center;gap:10px;flex-wrap:wrap; }
 
-  #btn-add {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 18px;
-    background: var(--accent);
-    color: #0a0b0d;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    white-space: nowrap;
-  }
-  #btn-add:hover { opacity: 0.85; transform: translateY(-1px); }
+  .chip { display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);font-size:11px;white-space:nowrap; }
+  .chip .lbl { color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;font-size:9px; }
+  .chip .val { color:var(--accent);font-weight:600; }
+  .chip .val.neg { color:var(--rem-neg); }
+  .chip-warn { border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.07); }
+  .chip-warn .lbl { color:rgba(251,191,36,0.6); }
+  .chip-warn .val { color:var(--warn); }
+  .chip-sync { cursor:default; }
 
-  .ghost-btn {
-    padding: 7px 14px;
-    background: transparent;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  #btn-clear:hover { color: var(--rem-neg); border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.07); }
-  #btn-undo:hover:not(:disabled) { color: var(--accent); border-color: rgba(0,229,160,0.4); background: rgba(0,229,160,0.07); }
-  #btn-undo:disabled { opacity: 0.28; cursor: not-allowed; }
-  .undo-badge {
-    background: rgba(0,229,160,0.18);
-    color: var(--accent);
-    border-radius: 10px;
-    padding: 1px 6px;
-    font-size: 10px;
-    font-weight: 700;
-    display: none;
-  }
+  #btn-add { display:flex;align-items:center;gap:6px;padding:8px 18px;background:var(--accent);color:#0a0b0d;border:none;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:opacity 0.15s,transform 0.1s;white-space:nowrap; }
+  #btn-add:hover { opacity:0.85;transform:translateY(-1px); }
+
+  .ghost-btn { padding:7px 14px;background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:color 0.15s,border-color 0.15s,background 0.15s;white-space:nowrap;display:flex;align-items:center;gap:6px; }
+  #btn-clear:hover { color:var(--rem-neg);border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.07); }
+  #btn-undo:hover:not(:disabled) { color:var(--accent);border-color:rgba(0,229,160,0.4);background:rgba(0,229,160,0.07); }
+  #btn-undo:disabled { opacity:0.28;cursor:not-allowed; }
+  .undo-badge { background:rgba(0,229,160,0.18);color:var(--accent);border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;display:none; }
 
   /* TABS */
-  #tabs-bar {
-    display: flex;
-    align-items: stretch;
-    padding: 0 16px;
-    height: 38px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-    gap: 3px;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-  #tabs-bar::-webkit-scrollbar { height: 3px; }
-  #tabs-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .tab {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 0 12px;
-    border-radius: 6px 6px 0 0;
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--text-dim);
-    border: 1px solid transparent;
-    border-bottom: none;
-    white-space: nowrap;
-    position: relative;
-    bottom: -1px;
-    transition: color 0.12s, background 0.12s;
-    user-select: none;
-    flex-shrink: 0;
-  }
-  .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-  .tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); font-weight: 600; }
-
-  .tab-name {
-    outline: none;
-    background: transparent;
-    border: none;
-    color: inherit;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: inherit;
-    cursor: pointer;
-    min-width: 50px;
-    max-width: 130px;
-    pointer-events: none;
-  }
-  .tab.active .tab-name { pointer-events: auto; cursor: text; }
-  .tab-name:focus { outline: 1px solid rgba(0,229,160,0.4); border-radius: 3px; padding: 1px 4px; }
-
-  .tab-close {
-    background: none; border: none; color: var(--text-muted); cursor: pointer;
-    font-size: 10px; padding: 2px 3px; border-radius: 3px; line-height: 1;
-    transition: color 0.1s, background 0.1s; opacity: 0;
-  }
-  .tab:hover .tab-close, .tab.active .tab-close { opacity: 1; }
-  .tab-close:hover { color: var(--rem-neg); background: rgba(248,113,113,0.15); }
-
-  #btn-new-tab {
-    display: flex; align-items: center; padding: 0 10px; margin-bottom: 1px;
-    background: none; border: 1px dashed var(--border); border-radius: 6px 6px 0 0;
-    color: var(--text-muted); font-size: 16px; cursor: pointer;
-    transition: color 0.12s, border-color 0.12s; flex-shrink: 0;
-  }
-  #btn-new-tab:hover { color: var(--accent); border-color: rgba(0,229,160,0.3); }
+  #tabs-bar { display:flex;align-items:stretch;padding:0 16px;height:38px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;gap:3px;overflow-x:auto;overflow-y:hidden; }
+  #tabs-bar::-webkit-scrollbar { height:3px; }
+  #tabs-bar::-webkit-scrollbar-thumb { background:var(--border);border-radius:2px; }
+  .tab { display:flex;align-items:center;gap:5px;padding:0 12px;border-radius:6px 6px 0 0;cursor:pointer;font-size:12px;color:var(--text-dim);border:1px solid transparent;border-bottom:none;white-space:nowrap;position:relative;bottom:-1px;transition:color 0.12s,background 0.12s;user-select:none;flex-shrink:0; }
+  .tab:hover { color:var(--text);background:rgba(255,255,255,0.03); }
+  .tab.active { color:var(--accent);background:var(--bg);border-color:var(--border);font-weight:600; }
+  .tab-name { outline:none;background:transparent;border:none;color:inherit;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:inherit;cursor:pointer;min-width:50px;max-width:130px;pointer-events:none; }
+  .tab.active .tab-name { pointer-events:auto;cursor:text; }
+  .tab-name:focus { outline:1px solid rgba(0,229,160,0.4);border-radius:3px;padding:1px 4px; }
+  .tab-close { background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:10px;padding:2px 3px;border-radius:3px;line-height:1;transition:color 0.1s,background 0.1s;opacity:0; }
+  .tab:hover .tab-close,.tab.active .tab-close { opacity:1; }
+  .tab-close:hover { color:var(--rem-neg);background:rgba(248,113,113,0.15); }
+  #btn-new-tab { display:flex;align-items:center;padding:0 10px;margin-bottom:1px;background:none;border:1px dashed var(--border);border-radius:6px 6px 0 0;color:var(--text-muted);font-size:16px;cursor:pointer;transition:color 0.12s,border-color 0.12s;flex-shrink:0; }
+  #btn-new-tab:hover { color:var(--accent);border-color:rgba(0,229,160,0.3); }
 
   /* SEARCH */
-  #search-bar {
-    display: flex; align-items: center; gap: 12px; padding: 8px 20px;
-    background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0;
-  }
-  #search-wrap { position: relative; flex: 1; max-width: 380px; }
-  #search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 13px; pointer-events: none; }
-  #search-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; outline: none; color: var(--text);
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    padding: 7px 28px 7px 32px; transition: border-color 0.15s, box-shadow 0.15s; caret-color: var(--accent);
-  }
-  #search-input::placeholder { color: var(--text-muted); }
-  #search-input:focus { border-color: rgba(0,229,160,0.4); box-shadow: 0 0 0 2px rgba(0,229,160,0.10); }
-  #search-clear {
-    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; color: var(--text-dim); cursor: pointer;
-    font-size: 12px; padding: 2px 4px; border-radius: 3px; display: none;
-  }
-  #search-clear:hover { color: var(--text); }
-  .search-info { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
-  .search-info .match { color: var(--accent); font-weight: 600; }
-
-  #low-stock-wrap { display: flex; align-items: center; gap: 8px; margin-left: auto; white-space: nowrap; }
-  #low-stock-wrap label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.7px; }
-  #low-stock-thresh {
-    width: 64px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; outline: none; color: var(--warn);
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    padding: 5px 8px; text-align: center; caret-color: var(--warn);
-  }
-  #low-stock-thresh:focus { border-color: rgba(251,191,36,0.5); }
+  #search-bar { display:flex;align-items:center;gap:12px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0; }
+  #search-wrap { position:relative;flex:1;max-width:380px; }
+  #search-icon { position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:13px;pointer-events:none; }
+  #search-input { width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;outline:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 28px 7px 32px;transition:border-color 0.15s,box-shadow 0.15s;caret-color:var(--accent); }
+  #search-input::placeholder { color:var(--text-muted); }
+  #search-input:focus { border-color:rgba(0,229,160,0.4);box-shadow:0 0 0 2px rgba(0,229,160,0.10); }
+  #search-clear { position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:2px 4px;border-radius:3px;display:none; }
+  #search-clear:hover { color:var(--text); }
+  .search-info { font-size:11px;color:var(--text-dim);white-space:nowrap; }
+  .search-info .match { color:var(--accent);font-weight:600; }
+  #low-stock-wrap { display:flex;align-items:center;gap:8px;margin-left:auto;white-space:nowrap; }
+  #low-stock-wrap label { font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px; }
+  #low-stock-thresh { width:64px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;outline:none;color:var(--warn);font-family:'JetBrains Mono',monospace;font-size:12px;padding:5px 8px;text-align:center;caret-color:var(--warn); }
+  #low-stock-thresh:focus { border-color:rgba(251,191,36,0.5); }
 
   /* SHEET */
-  #sheet-wrapper { flex: 1; overflow: auto; position: relative; }
-  #sheet-wrapper::-webkit-scrollbar { width: 8px; height: 8px; }
-  #sheet-wrapper::-webkit-scrollbar-track { background: var(--surface); }
-  #sheet-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-  #sheet-wrapper::-webkit-scrollbar-corner { background: var(--surface); }
+  #sheet-wrapper { flex:1;overflow:auto;position:relative; }
+  #sheet-wrapper::-webkit-scrollbar { width:8px;height:8px; }
+  #sheet-wrapper::-webkit-scrollbar-track { background:var(--surface); }
+  #sheet-wrapper::-webkit-scrollbar-thumb { background:var(--border);border-radius:4px; }
+  #sheet-wrapper::-webkit-scrollbar-corner { background:var(--surface); }
 
-  table { border-collapse: collapse; width: 100%; }
-  thead { position: sticky; top: 0; z-index: 20; }
-  thead tr { background: var(--header-bg); border-bottom: 2px solid var(--border); }
-  th {
-    height: var(--header-h); padding: 0 12px;
-    font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
-    letter-spacing: 1.2px; color: var(--text-dim); text-transform: uppercase;
-    text-align: left; border-right: 1px solid var(--border-light); user-select: none; white-space: nowrap;
+  table { border-collapse:collapse;width:100%; }
+  thead { position:sticky;top:0;z-index:20; }
+  thead tr { background:var(--header-bg);border-bottom:2px solid var(--border); }
+  th { height:var(--header-h);padding:0 12px;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text-dim);text-transform:uppercase;text-align:left;border-right:1px solid var(--border-light);user-select:none;white-space:nowrap; }
+  th:last-child { border-right:none; }
+  th.th-idx  { width:var(--col-idx);text-align:center;color:var(--text-muted); }
+  th.th-code { width:var(--col-code); }
+  th.th-name { width:var(--col-name); }
+  th.th-qty  { width:var(--col-num);text-align:right; }
+  th.th-sold { width:var(--col-num);text-align:right; }
+  th.th-sell { width:var(--col-sell);text-align:center;color:var(--accent); }
+  th.th-rem  { width:var(--col-rem);text-align:right;color:var(--accent); }
+  th.th-del  { width:var(--col-del); }
+
+  tbody tr { border-bottom:1px solid var(--border-light);transition:background 0.08s; }
+  tbody tr:nth-child(even) { background:var(--row-alt); }
+  tbody tr:hover { background:var(--row-hover); }
+  tbody tr:focus-within { background:rgba(0,229,160,0.025); }
+  tbody tr.low-stock { border-left:3px solid var(--rem-neg) !important;background:rgba(248,113,113,0.045) !important; }
+  tbody tr.low-stock:hover { background:rgba(248,113,113,0.07) !important; }
+  tbody tr.low-stock .td-idx::after { content:'!';display:inline-block;margin-left:3px;color:var(--rem-neg);font-weight:700;font-size:11px;animation:pulse-warn 1.6s ease-in-out infinite; }
+  tbody tr.warn-stock { border-left:3px solid var(--warn) !important;background:rgba(251,191,36,0.03) !important; }
+  @keyframes pulse-warn { 0%,100%{opacity:1}50%{opacity:0.3} }
+  tbody tr.hidden-row { display:none; }
+  @keyframes undo-flash { 0%{background:rgba(0,229,160,0.2)}100%{background:transparent} }
+  tbody tr.undo-flash { animation:undo-flash 0.6s ease forwards; }
+  @keyframes sell-flash { 0%{background:rgba(248,113,113,0.18)}100%{background:transparent} }
+  tbody tr.sell-flash { animation:sell-flash 0.7s ease forwards; }
+
+  td { padding:0 6px;height:var(--row-h);border-right:1px solid var(--border-light);vertical-align:middle; }
+  td:last-child { border-right:none; }
+  td.td-idx { text-align:center;font-size:10px;color:var(--text-muted);font-weight:600;user-select:none; }
+
+  input.ci { width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;padding:5px 8px;border-radius:5px;transition:background 0.12s,box-shadow 0.12s;caret-color:var(--accent); }
+  input.ci::placeholder { color:var(--text-muted);font-size:11px; }
+  input.ci:focus { background:rgba(0,229,160,0.06);box-shadow:0 0 0 1.5px rgba(0,229,160,0.30); }
+  input.ci.ci-code { font-weight:600;letter-spacing:0.5px;color:#c4b5fd; }
+  input.ci.ci-num  { text-align:right;color:#93c5fd; }
+
+  /* SELL BUTTON */
+  td.td-sell { text-align:center;padding:0 4px; }
+  .btn-sell {
+    background: rgba(248,113,113,0.12);
+    border: 1px solid rgba(248,113,113,0.25);
+    color: var(--rem-neg);
+    cursor: pointer;
+    padding: 4px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    transition: background 0.12s, border-color 0.12s, transform 0.1s;
+    white-space: nowrap;
   }
-  th:last-child { border-right: none; }
-  th.th-idx  { width: var(--col-idx); text-align: center; color: var(--text-muted); }
-  th.th-code { width: var(--col-code); }
-  th.th-name { width: var(--col-name); }
-  th.th-qty  { width: var(--col-num); text-align: right; }
-  th.th-sold { width: var(--col-num); text-align: right; }
-  th.th-rem  { width: var(--col-rem); text-align: right; color: var(--accent); }
-  th.th-del  { width: var(--col-del); }
+  .btn-sell:hover { background:rgba(248,113,113,0.22);border-color:rgba(248,113,113,0.5);transform:translateY(-1px); }
+  .btn-sell:active { transform:translateY(0); }
 
-  tbody tr { border-bottom: 1px solid var(--border-light); transition: background 0.08s; }
-  tbody tr:nth-child(even) { background: var(--row-alt); }
-  tbody tr:hover { background: var(--row-hover); }
-  tbody tr:focus-within { background: rgba(0,229,160,0.025); }
+  td.td-rem { text-align:right;padding:0 14px;font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;transition:color 0.2s; }
+  td.td-rem.empty { color:var(--text-muted); }
+  td.td-rem.pos   { color:var(--rem-pos); }
+  td.td-rem.neg   { color:var(--rem-neg); }
+  td.td-rem.zero  { color:var(--text-dim); }
+  td.td-rem.warn  { color:var(--warn); }
 
-  tbody tr.low-stock { border-left: 3px solid var(--rem-neg) !important; background: rgba(248,113,113,0.045) !important; }
-  tbody tr.low-stock:hover { background: rgba(248,113,113,0.07) !important; }
-  tbody tr.low-stock .td-idx::after {
-    content: '!'; display: inline-block; margin-left: 3px;
-    color: var(--rem-neg); font-weight: 700; font-size: 11px;
-    animation: pulse-warn 1.6s ease-in-out infinite;
-  }
-  tbody tr.warn-stock { border-left: 3px solid var(--warn) !important; background: rgba(251,191,36,0.03) !important; }
-  @keyframes pulse-warn { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  tbody tr.hidden-row { display: none; }
-  @keyframes undo-flash { 0%{background:rgba(0,229,160,0.2)} 100%{background:transparent} }
-  tbody tr.undo-flash { animation: undo-flash 0.6s ease forwards; }
-  @keyframes new-row-flash { 0%{background:rgba(0,229,160,0.12)} 100%{background:transparent} }
-  tbody tr.new-row-flash { animation: new-row-flash 0.8s ease forwards; }
-
-  td { padding: 0 6px; height: var(--row-h); border-right: 1px solid var(--border-light); vertical-align: middle; }
-  td:last-child { border-right: none; }
-  td.td-idx { text-align: center; font-size: 10px; color: var(--text-muted); font-weight: 600; user-select: none; }
-
-  input.ci {
-    width: 100%; background: transparent; border: none; outline: none;
-    color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px;
-    padding: 5px 8px; border-radius: 5px; transition: background 0.12s, box-shadow 0.12s; caret-color: var(--accent);
-  }
-  input.ci::placeholder { color: var(--text-muted); font-size: 11px; }
-  input.ci:focus { background: rgba(0,229,160,0.06); box-shadow: 0 0 0 1.5px rgba(0,229,160,0.30); }
-  input.ci.ci-code { font-weight: 600; letter-spacing: 0.5px; color: #c4b5fd; }
-  input.ci.ci-num  { text-align: right; color: #93c5fd; }
-
-  td.td-rem { text-align: right; padding: 0 14px; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; transition: color 0.2s; }
-  td.td-rem.empty { color: var(--text-muted); }
-  td.td-rem.pos   { color: var(--rem-pos); }
-  td.td-rem.neg   { color: var(--rem-neg); }
-  td.td-rem.zero  { color: var(--text-dim); }
-  td.td-rem.warn  { color: var(--warn); }
-
-  td.td-del { text-align: center; }
+  td.td-del { text-align:center; }
   .btn-del { background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px 7px;border-radius:4px;font-size:13px;transition:color 0.1s,background 0.1s;opacity:0; }
-  tr:hover .btn-del, tr:focus-within .btn-del { opacity:1; }
+  tr:hover .btn-del,tr:focus-within .btn-del { opacity:1; }
   .btn-del:hover { color:var(--rem-neg);background:rgba(248,113,113,0.12); }
 
   #empty-state { text-align:center;padding:70px 20px;color:var(--text-muted);display:none; }
@@ -376,31 +196,136 @@
   #no-results p { font-size:14px;color:var(--text-dim); }
 
   /* STATUS BAR */
-  #status-bar {
-    display: flex; align-items: center; gap: 20px; padding: 0 20px;
-    height: 32px; background: var(--surface); border-top: 1px solid var(--border);
-    flex-shrink: 0; font-size: 11px; color: var(--text-dim);
-  }
+  #status-bar { display:flex;align-items:center;gap:20px;padding:0 20px;height:32px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;font-size:11px;color:var(--text-dim); }
   .sb { display:flex;align-items:center;gap:5px; }
   .sb-lbl { color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:0.6px; }
   .sb-val { color:var(--accent);font-weight:600; }
   .sb-val.warn { color:var(--warn); }
   .sb-hint { margin-left:auto;font-size:10px;color:var(--text-muted); }
 
-  /* TOASTS */
-  .toast {
-    position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(10px);
-    border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;
-    opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;z-index:998;white-space:nowrap;
+  /* SELL MODAL */
+  #sell-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
   }
+  #sell-overlay.open { display: flex; }
+
+  #sell-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    width: 340px;
+    max-width: 92vw;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    animation: modal-in 0.18s ease;
+  }
+  @keyframes modal-in { from{opacity:0;transform:scale(0.95) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+  #sell-modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  #sell-modal .sell-item-name {
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sell-info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+  }
+  .sell-info-box {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .sell-info-box .sib-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .sell-info-box .sib-val { font-size: 18px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .sell-info-box .sib-val.neg { color: var(--rem-neg); }
+  .sell-info-box .sib-val.warn { color: var(--warn); }
+
+  #sell-modal label {
+    display: block;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  #sell-amount {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid rgba(0,229,160,0.3);
+    border-radius: 8px;
+    outline: none;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 12px 16px;
+    text-align: center;
+    caret-color: var(--accent);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    margin-bottom: 8px;
+  }
+  #sell-amount:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,160,0.12); }
+
+  #sell-preview {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    min-height: 16px;
+  }
+  #sell-preview .preview-eq { color: var(--text-muted); }
+  #sell-preview .preview-result { color: var(--rem-pos); font-weight: 600; }
+  #sell-preview .preview-result.neg { color: var(--rem-neg); }
+  #sell-preview .preview-result.warn { color: var(--warn); }
+
+  .sell-modal-btns { display: flex; gap: 10px; }
+  #sell-cancel {
+    flex: 1; padding: 10px; background: transparent; border: 1px solid var(--border);
+    border-radius: 7px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; cursor: pointer; transition: border-color 0.12s, color 0.12s;
+  }
+  #sell-cancel:hover { border-color: var(--text-dim); color: var(--text); }
+  #sell-confirm {
+    flex: 2; padding: 10px; background: var(--rem-neg); border: none;
+    border-radius: 7px; color: #fff; font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    transition: opacity 0.12s, transform 0.1s;
+  }
+  #sell-confirm:hover { opacity: 0.88; transform: translateY(-1px); }
+  #sell-confirm:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+  /* TOASTS */
+  .toast { position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(10px);border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity 0.2s,transform 0.2s;z-index:998;white-space:nowrap; }
   .toast.visible { opacity:1;transform:translateX(-50%) translateY(0); }
   #undo-toast { background:rgba(0,229,160,0.12);border:1px solid rgba(0,229,160,0.35);color:var(--accent); }
   #low-stock-toast { background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--rem-neg);z-index:997; }
+  #sell-toast { background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--rem-neg);z-index:999; }
 </style>
 </head>
 <body>
-
-<div id="sync-indicator">⟳ Syncing…</div>
 
 <div id="topbar">
   <div id="logo">∞ Inventory <span>LIVE SHEET</span></div>
@@ -443,7 +368,8 @@
         <th class="th-code">Code</th>
         <th class="th-name">Name</th>
         <th class="th-qty">Quantity</th>
-        <th class="th-sold">Sold</th>
+        <th class="th-sold">Total Sold</th>
+        <th class="th-sell">Sell</th>
         <th class="th-rem">Remaining</th>
         <th class="th-del"></th>
       </tr>
@@ -463,20 +389,46 @@
   <div class="sb"><span class="sb-lbl">Total Sold</span><span class="sb-val" id="s-sold">0</span></div>
   <div class="sb"><span class="sb-lbl">Remaining</span><span class="sb-val" id="s-rem">0</span></div>
   <div class="sb"><span class="sb-lbl">⚠ Low</span><span class="sb-val warn" id="s-low">0</span></div>
-  <span class="sb-hint">TAB/ENTER → next &nbsp;·&nbsp; Ctrl+Z → undo &nbsp;·&nbsp; Dbl-click tab → rename &nbsp;·&nbsp; ☁ Auto-synced</span>
+  <span class="sb-hint">Click <strong style="color:var(--rem-neg)">− Sell</strong> to record a sale &nbsp;·&nbsp; Ctrl+Z → undo &nbsp;·&nbsp; ☁ Auto-synced</span>
+</div>
+
+<!-- SELL MODAL -->
+<div id="sell-overlay">
+  <div id="sell-modal">
+    <h2>Record Sale</h2>
+    <div class="sell-item-name" id="sell-item-name">—</div>
+    <div class="sell-info-row">
+      <div class="sell-info-box">
+        <div class="sib-lbl">In Stock</div>
+        <div class="sib-val" id="sell-current-stock">—</div>
+      </div>
+      <div class="sell-info-box">
+        <div class="sib-lbl">Total Sold</div>
+        <div class="sib-val" id="sell-total-sold">—</div>
+      </div>
+      <div class="sell-info-box">
+        <div class="sib-lbl">After Sale</div>
+        <div class="sib-val" id="sell-after">—</div>
+      </div>
+    </div>
+    <label for="sell-amount">How many did you sell?</label>
+    <input type="number" id="sell-amount" min="1" step="1" placeholder="0" autocomplete="off">
+    <div id="sell-preview"></div>
+    <div class="sell-modal-btns">
+      <button id="sell-cancel" onclick="closeSellModal()">Cancel</button>
+      <button id="sell-confirm" onclick="confirmSell()" disabled>− Confirm Sale</button>
+    </div>
+  </div>
 </div>
 
 <div id="undo-toast" class="toast"></div>
 <div id="low-stock-toast" class="toast"></div>
+<div id="sell-toast" class="toast"></div>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-/* ═══════════════════════════════════
-   FIREBASE INIT
-═══════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyC5MldYPEf3s6XAkdpl3SiLABvngRtQsOw",
   authDomain: "sklad-6b353.firebaseapp.com",
@@ -491,138 +443,90 @@ const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 const DB_PATH = 'inventory_v1';
 
-/* ═══════════════════════════════════
-   STATE
-═══════════════════════════════════ */
 const THRESH_KEY = 'inv_thresh_v1';
 const MAX_UNDO   = 20;
 
-let sheets     = [];
-let activeId   = null;
-let undoStack  = [];
-let rowCount   = 0;
+let sheets      = [];
+let activeId    = null;
+let undoStack   = [];
+let rowCount    = 0;
 let searchQuery = '';
-let lowTimer   = null;
-let isSyncing  = false;
-let remoteListener = null;
+let lowTimer    = null;
+let pushTimer   = null;
 
-// Debounce timer for pushing to Firebase
-let pushTimer = null;
+// Sell modal state
+let sellTargetRow = null;
 
 const $tbody = () => document.getElementById('tbody');
 
-/* ═══════════════════════════════════
-   CONNECTION STATUS
-═══════════════════════════════════ */
-function setConnStatus(status) {
+/* ── CONNECTION ── */
+function setConnStatus(s) {
   const dot = document.getElementById('conn-dot');
   const lbl = document.getElementById('conn-label');
-  dot.className = status;
-  if (status === 'online')  lbl.textContent = 'Live';
-  if (status === 'offline') lbl.textContent = 'Offline';
-  if (status === 'syncing') lbl.textContent = 'Syncing…';
+  dot.className = s;
+  lbl.textContent = s === 'online' ? 'Live' : s === 'offline' ? 'Offline' : 'Syncing…';
 }
 
-/* ═══════════════════════════════════
-   FIREBASE PUSH / LISTEN
-═══════════════════════════════════ */
-function schedulePush() {
-  clearTimeout(pushTimer);
-  pushTimer = setTimeout(pushToFirebase, 600);
-}
+/* ── FIREBASE ── */
+function schedulePush() { clearTimeout(pushTimer); pushTimer = setTimeout(pushToFirebase, 600); }
 
 function pushToFirebase() {
-  // Save current active sheet rows first
-  if (activeId) {
-    const cur = sheets.find(s => s.id === activeId);
-    if (cur) cur.rows = captureRows();
-  }
+  if (activeId) { const cur = sheets.find(s => s.id === activeId); if (cur) cur.rows = captureRows(); }
   setConnStatus('syncing');
   const payload = { sheets, activeId, thresh: document.getElementById('low-stock-thresh').value };
-  set(ref(db, DB_PATH), payload)
-    .then(() => setConnStatus('online'))
-    .catch(() => setConnStatus('offline'));
+  set(ref(db, DB_PATH), payload).then(() => setConnStatus('online')).catch(() => setConnStatus('offline'));
 }
 
 function startListening() {
-  if (remoteListener) off(ref(db, DB_PATH));
-  const dbRef = ref(db, DB_PATH);
-  onValue(dbRef, snapshot => {
-    const data = snapshot.val();
-    if (!data) {
-      // First time — create default sheets
-      initDefaultSheets();
-      return;
-    }
-    // Don't re-render if WE just pushed (avoid cursor jump)
-    if (isSyncing) { isSyncing = false; return; }
-
-    // Apply remote data
+  onValue(ref(db, DB_PATH), snap => {
+    const data = snap.val();
+    if (!data) { initDefaultSheets(); return; }
     if (data.thresh) document.getElementById('low-stock-thresh').value = data.thresh;
     if (data.sheets && Array.isArray(data.sheets)) {
+      // Don't reload if we're in the middle of editing (focused input)
+      if (document.activeElement && document.activeElement.classList.contains('ci')) return;
       sheets = data.sheets;
-      // Keep activeId valid
-      if (!activeId || !sheets.find(s => s.id === activeId)) {
+      if (!activeId || !sheets.find(s => s.id === activeId))
         activeId = data.activeId || sheets[0]?.id;
-      }
-      renderTabs();
-      loadSheetRows();
+      renderTabs(); loadSheetRows();
     }
     setConnStatus('online');
-  }, err => {
-    console.error(err);
-    setConnStatus('offline');
-  });
+  }, err => { console.error(err); setConnStatus('offline'); });
 }
 
 function initDefaultSheets() {
-  ['Sheet 1', 'Sheet 2', 'Sheet 3'].forEach(n => {
-    sheets.push({ id: uid(), name: n, rows: [] });
-  });
+  ['Sheet 1','Sheet 2','Sheet 3'].forEach(n => sheets.push({ id: uid(), name: n, rows: [] }));
   activeId = sheets[0].id;
-  renderTabs();
-  loadSheetRows();
-  pushToFirebase();
+  renderTabs(); loadSheetRows(); pushToFirebase();
 }
 
-/* ═══════════════════════════════════
-   UNDO
-═══════════════════════════════════ */
+/* ── UNDO ── */
 function snapshot(label) {
   undoStack.push({ id: activeId, label: label || 'action', rows: captureRows() });
   if (undoStack.length > MAX_UNDO) undoStack.shift();
   refreshUndoBtn();
 }
-
 function captureRows() {
   return Array.from($tbody().querySelectorAll('tr')).map(tr => {
     const ins = tr.querySelectorAll('input.ci');
     return { code: ins[0].value, name: ins[1].value, qty: ins[2].value, sold: ins[3].value };
   });
 }
-
 function undo() {
   if (!undoStack.length) return;
-  const state = undoStack.pop();
-  refreshUndoBtn();
-  if (state.id !== activeId) switchSheet(state.id, false);
-  $tbody().innerHTML = '';
-  rowCount = 0;
+  const state = undoStack.pop(); refreshUndoBtn();
+  if (state.id !== activeId) switchSheet(state.id);
+  $tbody().innerHTML = ''; rowCount = 0;
   state.rows.forEach(r => {
     const tr = buildRow(false, true);
     const ins = tr.querySelectorAll('input.ci');
-    ins[0].value = r.code; ins[1].value = r.name;
-    ins[2].value = r.qty;  ins[3].value = r.sold;
+    ins[0].value = r.code; ins[1].value = r.name; ins[2].value = r.qty; ins[3].value = r.sold;
     calcRow(tr);
   });
-  reindex(); recalcAll(); applySearch();
-  schedulePush();
-  $tbody().querySelectorAll('tr').forEach(tr => {
-    tr.classList.remove('undo-flash'); void tr.offsetWidth; tr.classList.add('undo-flash');
-  });
+  reindex(); recalcAll(); applySearch(); schedulePush();
+  $tbody().querySelectorAll('tr').forEach(tr => { tr.classList.remove('undo-flash'); void tr.offsetWidth; tr.classList.add('undo-flash'); });
   showToast('undo-toast', `↩ Undid: ${state.label}`);
 }
-
 function refreshUndoBtn() {
   const btn = document.getElementById('btn-undo');
   const badge = document.getElementById('undo-badge');
@@ -630,63 +534,127 @@ function refreshUndoBtn() {
   badge.style.display = undoStack.length ? 'inline' : 'none';
   badge.textContent = undoStack.length;
 }
-
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+  if (e.key === 'Escape') closeSellModal();
 });
 
-/* ═══════════════════════════════════
-   SHEETS
-═══════════════════════════════════ */
+/* ── SELL MODAL ── */
+function openSellModal(tr) {
+  sellTargetRow = tr;
+  const ins = tr.querySelectorAll('input.ci');
+  const name = ins[1].value || ins[0].value || 'Item';
+  const qty  = parseFloat(ins[2].value) || 0;
+  const sold = parseFloat(ins[3].value) || 0;
+  const rem  = qty - sold;
+
+  document.getElementById('sell-item-name').textContent = name;
+  document.getElementById('sell-current-stock').textContent = fmt(rem);
+  const stockEl = document.getElementById('sell-current-stock');
+  stockEl.className = 'sib-val' + (rem <= 0 ? ' neg' : rem <= parseFloat(document.getElementById('low-stock-thresh').value) ? ' warn' : '');
+  document.getElementById('sell-total-sold').textContent = fmt(sold);
+  document.getElementById('sell-after').textContent = '—';
+  document.getElementById('sell-after').className = 'sib-val';
+  document.getElementById('sell-amount').value = '';
+  document.getElementById('sell-preview').innerHTML = '';
+  document.getElementById('sell-confirm').disabled = true;
+  document.getElementById('sell-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('sell-amount').focus(), 80);
+}
+
+function closeSellModal() {
+  document.getElementById('sell-overlay').classList.remove('open');
+  sellTargetRow = null;
+}
+
+function updateSellPreview() {
+  if (!sellTargetRow) return;
+  const ins = sellTargetRow.querySelectorAll('input.ci');
+  const qty  = parseFloat(ins[2].value) || 0;
+  const sold = parseFloat(ins[3].value) || 0;
+  const rem  = qty - sold;
+  const amount = parseFloat(document.getElementById('sell-amount').value) || 0;
+  const newRem = rem - amount;
+  const newSold = sold + amount;
+  const thresh = parseFloat(document.getElementById('low-stock-thresh').value) || 0;
+
+  const afterEl = document.getElementById('sell-after');
+  afterEl.textContent = fmt(newRem);
+  afterEl.className = 'sib-val' + (newRem < 0 ? ' neg' : newRem <= thresh ? ' warn' : '');
+
+  const prev = document.getElementById('sell-preview');
+  const confirmBtn = document.getElementById('sell-confirm');
+
+  if (amount <= 0) {
+    prev.innerHTML = '';
+    confirmBtn.disabled = true;
+    return;
+  }
+
+  const remClass = newRem < 0 ? 'neg' : newRem <= thresh ? 'warn' : '';
+  prev.innerHTML = `<span class="preview-eq">Sold ${fmt(sold)} + ${fmt(amount)} = ${fmt(newSold)} total &nbsp;·&nbsp; Remaining: </span><span class="preview-result ${remClass}">${fmt(newRem)}</span>`;
+  confirmBtn.disabled = amount <= 0;
+}
+
+function confirmSell() {
+  if (!sellTargetRow) return;
+  const amount = parseFloat(document.getElementById('sell-amount').value) || 0;
+  if (amount <= 0) return;
+
+  snapshot('sell');
+  const ins = sellTargetRow.querySelectorAll('input.ci');
+  const currentSold = parseFloat(ins[3].value) || 0;
+  const itemName = ins[1].value || ins[0].value || 'Item';
+  ins[3].value = currentSold + amount;
+  calcRow(sellTargetRow); recalcAll(); schedulePush();
+
+  // Flash the row
+  sellTargetRow.classList.remove('sell-flash'); void sellTargetRow.offsetWidth; sellTargetRow.classList.add('sell-flash');
+
+  closeSellModal();
+  showToast('sell-toast', `− Sold ${fmt(amount)} × ${itemName}`);
+}
+
+// expose modal globally
+window.closeSellModal = closeSellModal;
+window.confirmSell   = confirmSell;
+
+document.getElementById('sell-amount').addEventListener('input', updateSellPreview);
+document.getElementById('sell-amount').addEventListener('keydown', e => { if (e.key === 'Enter') confirmSell(); });
+document.getElementById('sell-overlay').addEventListener('click', e => { if (e.target === document.getElementById('sell-overlay')) closeSellModal(); });
+
+/* ── SHEETS ── */
 function uid() { return 'sh_' + Math.random().toString(36).slice(2, 8); }
 
 function newSheet(name, switchTo = true) {
   const id = uid();
   sheets.push({ id, name: name || `Sheet ${sheets.length + 1}`, rows: [] });
   renderTabs();
-  if (switchTo) switchSheet(id);
-  else schedulePush();
+  if (switchTo) switchSheet(id); else schedulePush();
   return id;
 }
-
 function switchSheet(id) {
-  if (activeId) {
-    const cur = sheets.find(s => s.id === activeId);
-    if (cur) cur.rows = captureRows();
-  }
-  activeId = id;
-  renderTabs();
-  loadSheetRows();
-  clearSearch();
+  if (activeId) { const cur = sheets.find(s => s.id === activeId); if (cur) cur.rows = captureRows(); }
+  activeId = id; renderTabs(); loadSheetRows(); clearSearch();
 }
-
 function deleteSheet(id) {
   if (sheets.length <= 1) { alert('You need at least one sheet.'); return; }
   if (!confirm('Delete this sheet and all its data?')) return;
   snapshot('delete sheet');
   const idx = sheets.findIndex(s => s.id === id);
   sheets.splice(idx, 1);
-  if (activeId === id) {
-    activeId = null;
-    switchSheet(sheets[Math.max(0, idx - 1)].id);
-  }
-  renderTabs();
-  schedulePush();
+  if (activeId === id) { activeId = null; switchSheet(sheets[Math.max(0, idx-1)].id); }
+  renderTabs(); schedulePush();
 }
-
 function renderTabs() {
   const bar = document.getElementById('tabs-bar');
   bar.querySelectorAll('.tab').forEach(t => t.remove());
   const newBtn = document.getElementById('btn-new-tab');
-
   sheets.forEach(sheet => {
     const tab = document.createElement('div');
     tab.className = 'tab' + (sheet.id === activeId ? ' active' : '');
-
     const nameEl = document.createElement('input');
-    nameEl.type = 'text'; nameEl.className = 'tab-name';
-    nameEl.value = sheet.name; nameEl.readOnly = true;
-    nameEl.title = 'Double-click to rename';
+    nameEl.type = 'text'; nameEl.className = 'tab-name'; nameEl.value = sheet.name; nameEl.readOnly = true;
     nameEl.addEventListener('dblclick', () => { if (sheet.id !== activeId) return; nameEl.readOnly = false; nameEl.focus(); nameEl.select(); });
     nameEl.addEventListener('blur', () => {
       nameEl.readOnly = true;
@@ -694,69 +662,54 @@ function renderTabs() {
       if (s) { s.name = nameEl.value.trim() || s.name; nameEl.value = s.name; }
       schedulePush(); renderTabs();
     });
-    nameEl.addEventListener('keydown', e => {
-      if (e.key === 'Enter') nameEl.blur();
-      if (e.key === 'Escape') { nameEl.value = sheet.name; nameEl.blur(); }
-    });
-
+    nameEl.addEventListener('keydown', e => { if (e.key === 'Enter') nameEl.blur(); if (e.key === 'Escape') { nameEl.value = sheet.name; nameEl.blur(); } });
     const closeBtn = document.createElement('button');
     closeBtn.className = 'tab-close'; closeBtn.innerHTML = '✕'; closeBtn.title = 'Delete sheet';
     closeBtn.addEventListener('click', e => { e.stopPropagation(); deleteSheet(sheet.id); });
-
     tab.appendChild(nameEl); tab.appendChild(closeBtn);
     tab.addEventListener('click', e => { if (e.target === closeBtn) return; if (sheet.id !== activeId) switchSheet(sheet.id); });
     bar.insertBefore(tab, newBtn);
   });
 }
-
 function loadSheetRows() {
   const sheet = sheets.find(s => s.id === activeId);
   $tbody().innerHTML = ''; rowCount = 0;
   if (!sheet) return;
-  if (!sheet.rows || sheet.rows.length === 0) {
+  if (!sheet.rows || !sheet.rows.length) {
     for (let i = 0; i < 5; i++) buildRow(i === 0, true);
   } else {
     sheet.rows.forEach(r => {
       const tr = buildRow(false, true);
       const ins = tr.querySelectorAll('input.ci');
-      ins[0].value = r.code || ''; ins[1].value = r.name || '';
-      ins[2].value = r.qty  || ''; ins[3].value = r.sold || '';
+      ins[0].value = r.code||''; ins[1].value = r.name||''; ins[2].value = r.qty||''; ins[3].value = r.sold||'';
       calcRow(tr);
     });
   }
   reindex(); recalcAll(); updateEmpty();
 }
 
-/* ═══════════════════════════════════
-   CLEAR
-═══════════════════════════════════ */
+/* ── CLEAR ── */
 function clearAll() {
   if (!confirm('Clear all rows in this sheet?')) return;
   snapshot('clear sheet');
-  $tbody().innerHTML = ''; rowCount = 0;
-  clearSearch();
+  $tbody().innerHTML = ''; rowCount = 0; clearSearch();
   for (let i = 0; i < 5; i++) buildRow(i === 0, true);
   reindex(); recalcAll(); updateEmpty(); schedulePush();
 }
 
-/* ═══════════════════════════════════
-   SEARCH
-═══════════════════════════════════ */
+/* ── SEARCH ── */
 function handleSearch() {
   searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
   document.getElementById('search-clear').style.display = searchQuery ? 'block' : 'none';
   applySearch();
 }
-
 function clearSearch() {
   document.getElementById('search-input').value = '';
   document.getElementById('search-clear').style.display = 'none';
   searchQuery = ''; applySearch();
 }
-
 function applySearch() {
-  const rows = $tbody().querySelectorAll('tr');
-  let visible = 0;
+  const rows = $tbody().querySelectorAll('tr'); let visible = 0;
   rows.forEach(tr => {
     if (!searchQuery) { tr.classList.remove('hidden-row'); visible++; return; }
     const ins = tr.querySelectorAll('input.ci');
@@ -764,28 +717,21 @@ function applySearch() {
     tr.classList.toggle('hidden-row', !match);
     if (match) visible++;
   });
-  const info = document.getElementById('search-info');
-  const noRes = document.getElementById('no-results');
+  const info = document.getElementById('search-info'), noRes = document.getElementById('no-results');
   if (searchQuery) {
     info.innerHTML = `<span class="match">${visible}</span> of ${rows.length} match`;
     noRes.style.display = visible === 0 ? 'block' : 'none';
     if (visible === 0) { document.getElementById('no-results-msg').textContent = `No items match "${searchQuery}"`; document.getElementById('table').style.display = 'none'; }
     else document.getElementById('table').style.display = '';
-  } else {
-    info.innerHTML = ''; noRes.style.display = 'none'; updateEmpty();
-  }
+  } else { info.innerHTML = ''; noRes.style.display = 'none'; updateEmpty(); }
 }
 
-/* ═══════════════════════════════════
-   ROWS
-═══════════════════════════════════ */
+/* ── ROWS ── */
 function addRow(focus = true) {
   const tr = buildRow(focus, false);
   if (focus) { snapshot('add row'); schedulePush(); }
   return tr;
 }
-
-// Make addRow global
 window.addRow = addRow;
 window.clearAll = clearAll;
 window.newSheet = newSheet;
@@ -797,34 +743,38 @@ function buildRow(focus = true, silent = false) {
   rowCount++;
   const tr = document.createElement('tr');
 
-  const tdIdx = document.createElement('td');
-  tdIdx.className = 'td-idx'; tdIdx.textContent = rowCount;
+  const tdIdx = document.createElement('td'); tdIdx.className = 'td-idx'; tdIdx.textContent = rowCount;
   tr.appendChild(tdIdx);
 
-  const inpCode = inp('ci ci-code', 'e.g. SKU-001', 'text');
-  const inpName = inp('ci', 'Product name', 'text');
-  const inpQty  = inp('ci ci-num', '0', 'number');
-  const inpSold = inp('ci ci-num', '0', 'number');
+  const inpCode = inp('ci ci-code','e.g. SKU-001','text');
+  const inpName = inp('ci','Product name','text');
+  const inpQty  = inp('ci ci-num','0','number');
+  const inpSold = inp('ci ci-num','0','number');
   tr.appendChild(wrap(inpCode)); tr.appendChild(wrap(inpName));
   tr.appendChild(wrap(inpQty));  tr.appendChild(wrap(inpSold));
 
-  const tdRem = document.createElement('td');
-  tdRem.className = 'td-rem empty'; tdRem.textContent = '—';
+  // SELL BUTTON column
+  const tdSell = document.createElement('td'); tdSell.className = 'td-sell';
+  const btnSell = document.createElement('button');
+  btnSell.className = 'btn-sell'; btnSell.textContent = '− Sell';
+  btnSell.onclick = () => openSellModal(tr);
+  tdSell.appendChild(btnSell);
+  tr.appendChild(tdSell);
+
+  const tdRem = document.createElement('td'); tdRem.className = 'td-rem empty'; tdRem.textContent = '—';
   tr.appendChild(tdRem);
 
-  const tdDel = document.createElement('td');
-  tdDel.className = 'td-del';
+  const tdDel = document.createElement('td'); tdDel.className = 'td-del';
   const btnDel = document.createElement('button');
   btnDel.className = 'btn-del'; btnDel.innerHTML = '✕'; btnDel.title = 'Delete row';
   btnDel.onclick = () => { snapshot('delete row'); tr.remove(); reindex(); recalcAll(); applySearch(); schedulePush(); };
-  tdDel.appendChild(btnDel);
-  tr.appendChild(tdDel);
+  tdDel.appendChild(btnDel); tr.appendChild(tdDel);
 
   $tbody().appendChild(tr);
 
   const inputs = [inpCode, inpName, inpQty, inpSold];
   let snapTimer = null;
-  const schedSnap = (label) => { clearTimeout(snapTimer); snapTimer = setTimeout(() => snapshot(label), 1000); };
+  const schedSnap = label => { clearTimeout(snapTimer); snapTimer = setTimeout(() => snapshot(label), 1000); };
 
   inpQty.addEventListener('input',  () => { calcRow(tr); recalcAll(); schedulePush(); });
   inpSold.addEventListener('input', () => { calcRow(tr); recalcAll(); schedulePush(); });
@@ -839,24 +789,11 @@ function buildRow(focus = true, silent = false) {
     input.addEventListener('keydown', e => {
       if (e.key === 'Tab' || e.key === 'Enter') {
         e.preventDefault();
-        if (i < inputs.length - 1) inputs[i + 1].focus();
-        else {
-          const next = tr.nextElementSibling;
-          if (next) next.querySelectorAll('input.ci')[0].focus();
-          else { const r = addRow(false); r.querySelectorAll('input.ci')[0].focus(); }
-        }
+        if (i < inputs.length - 1) inputs[i+1].focus();
+        else { const next = tr.nextElementSibling; if (next) next.querySelectorAll('input.ci')[0].focus(); else { const r = addRow(false); r.querySelectorAll('input.ci')[0].focus(); } }
       }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const next = tr.nextElementSibling;
-        if (next) (next.querySelectorAll('input.ci')[i] || next.querySelectorAll('input.ci')[0]).focus();
-        else { const r = addRow(false); r.querySelectorAll('input.ci')[i].focus(); }
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const prev = tr.previousElementSibling;
-        if (prev) (prev.querySelectorAll('input.ci')[i] || prev.querySelectorAll('input.ci')[0]).focus();
-      }
+      if (e.key === 'ArrowDown') { e.preventDefault(); const next = tr.nextElementSibling; if (next) (next.querySelectorAll('input.ci')[i]||next.querySelectorAll('input.ci')[0]).focus(); else { const r = addRow(false); r.querySelectorAll('input.ci')[i].focus(); } }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); const prev = tr.previousElementSibling; if (prev) (prev.querySelectorAll('input.ci')[i]||prev.querySelectorAll('input.ci')[0]).focus(); }
     });
   });
 
@@ -870,81 +807,59 @@ function calcRow(tr) {
   const ins = tr.querySelectorAll('input.ci');
   const qv = ins[2].value.trim(), sv = ins[3].value.trim();
   const tdRem = tr.querySelector('.td-rem');
-  const thresh = parseFloat(document.getElementById('low-stock-thresh').value) || 0;
-  if (qv === '' && sv === '') { tdRem.className = 'td-rem empty'; tdRem.textContent = '—'; tr.classList.remove('low-stock','warn-stock'); return 0; }
-  const qty = parseFloat(qv)||0, sold = parseFloat(sv)||0, rem = qty - sold;
+  const thresh = parseFloat(document.getElementById('low-stock-thresh').value)||0;
+  if (qv===''&&sv==='') { tdRem.className='td-rem empty'; tdRem.textContent='—'; tr.classList.remove('low-stock','warn-stock'); return 0; }
+  const qty=parseFloat(qv)||0, sold=parseFloat(sv)||0, rem=qty-sold;
   tr.classList.remove('low-stock','warn-stock');
-  if (rem <= thresh && (qv||sv)) {
-    if (rem <= thresh * 0.5 || rem <= 0) { tr.classList.add('low-stock'); tdRem.className = 'td-rem neg'; }
-    else { tr.classList.add('warn-stock'); tdRem.className = 'td-rem warn'; }
-  } else { tdRem.className = 'td-rem ' + (rem > 0 ? 'pos' : rem < 0 ? 'neg' : 'zero'); }
-  tdRem.textContent = fmt(rem);
+  if (rem<=thresh&&(qv||sv)) {
+    if (rem<=thresh*0.5||rem<=0) { tr.classList.add('low-stock'); tdRem.className='td-rem neg'; }
+    else { tr.classList.add('warn-stock'); tdRem.className='td-rem warn'; }
+  } else { tdRem.className='td-rem '+(rem>0?'pos':rem<0?'neg':'zero'); }
+  tdRem.textContent=fmt(rem);
   return rem;
 }
 
 function recalcAll() {
   let tQ=0,tS=0,tR=0,low=0;
-  const thresh = parseFloat(document.getElementById('low-stock-thresh').value)||0;
+  const thresh=parseFloat(document.getElementById('low-stock-thresh').value)||0;
   $tbody().querySelectorAll('tr').forEach(tr => {
-    const ins = tr.querySelectorAll('input.ci');
-    tQ += parseFloat(ins[2].value)||0; tS += parseFloat(ins[3].value)||0;
-    const r = calcRow(tr); tR += r;
-    if ((ins[2].value.trim()||ins[3].value.trim()) && r <= thresh) low++;
+    const ins=tr.querySelectorAll('input.ci');
+    tQ+=parseFloat(ins[2].value)||0; tS+=parseFloat(ins[3].value)||0;
+    const r=calcRow(tr); tR+=r;
+    if ((ins[2].value.trim()||ins[3].value.trim())&&r<=thresh) low++;
   });
-  const n = $tbody().querySelectorAll('tr').length;
-  document.getElementById('c-rows').textContent  = n;
-  document.getElementById('c-qty').textContent   = fmt(tQ);
-  document.getElementById('c-sold').textContent  = fmt(tS);
-  const cRem = document.getElementById('c-rem'); cRem.textContent = fmt(tR); cRem.className = 'val'+(tR<0?' neg':'');
-  document.getElementById('c-low').textContent   = low;
-  document.getElementById('s-rows').textContent  = n;
-  document.getElementById('s-qty').textContent   = fmt(tQ);
-  document.getElementById('s-sold').textContent  = fmt(tS);
-  document.getElementById('s-rem').textContent   = fmt(tR);
-  document.getElementById('s-low').textContent   = low;
-  if (low > 0) {
-    clearTimeout(lowTimer);
-    showToast('low-stock-toast', `⚠ ${low} item${low>1?'s':''} below threshold (≤${thresh})`);
-    lowTimer = setTimeout(() => document.getElementById('low-stock-toast').classList.remove('visible'), 3500);
-  }
+  const n=$tbody().querySelectorAll('tr').length;
+  document.getElementById('c-rows').textContent=n;
+  document.getElementById('c-qty').textContent=fmt(tQ);
+  document.getElementById('c-sold').textContent=fmt(tS);
+  const cRem=document.getElementById('c-rem'); cRem.textContent=fmt(tR); cRem.className='val'+(tR<0?' neg':'');
+  document.getElementById('c-low').textContent=low;
+  document.getElementById('s-rows').textContent=n;
+  document.getElementById('s-qty').textContent=fmt(tQ);
+  document.getElementById('s-sold').textContent=fmt(tS);
+  document.getElementById('s-rem').textContent=fmt(tR);
+  document.getElementById('s-low').textContent=low;
+  if (low>0) { clearTimeout(lowTimer); showToast('low-stock-toast',`⚠ ${low} item${low>1?'s':''} below threshold (≤${thresh})`); lowTimer=setTimeout(()=>document.getElementById('low-stock-toast').classList.remove('visible'),3500); }
 }
 
-function reindex() {
-  $tbody().querySelectorAll('tr').forEach((tr,i) => tr.querySelector('.td-idx').textContent = i+1);
-  rowCount = $tbody().querySelectorAll('tr').length;
-  updateEmpty();
-}
-
+function reindex() { $tbody().querySelectorAll('tr').forEach((tr,i)=>tr.querySelector('.td-idx').textContent=i+1); rowCount=$tbody().querySelectorAll('tr').length; updateEmpty(); }
 function updateEmpty() {
-  const has = $tbody().querySelectorAll('tr').length > 0;
-  if (!searchQuery) {
-    document.getElementById('table').style.display       = has ? '' : 'none';
-    document.getElementById('empty-state').style.display = has ? 'none' : 'block';
-  } else { document.getElementById('empty-state').style.display = 'none'; }
+  const has=$tbody().querySelectorAll('tr').length>0;
+  if (!searchQuery) { document.getElementById('table').style.display=has?'':'none'; document.getElementById('empty-state').style.display=has?'none':'block'; }
+  else { document.getElementById('empty-state').style.display='none'; }
 }
 
-function saveThresh() { localStorage.setItem(THRESH_KEY, document.getElementById('low-stock-thresh').value); schedulePush(); }
-window.saveThresh = saveThresh;
+function saveThresh() { localStorage.setItem(THRESH_KEY,document.getElementById('low-stock-thresh').value); schedulePush(); }
+window.saveThresh=saveThresh;
 
-function showToast(id, msg) {
-  const t = document.getElementById(id); t.textContent = msg; t.classList.add('visible');
-  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('visible'), 2500);
-}
+function showToast(id,msg) { const t=document.getElementById(id); t.textContent=msg; t.classList.add('visible'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('visible'),2500); }
+function fmt(n) { return Number.isInteger(n)?n.toLocaleString():n.toLocaleString(undefined,{maximumFractionDigits:4}); }
+function inp(cls,ph,type) { const i=document.createElement('input'); i.type=type; i.className=cls; i.placeholder=ph; if(type==='number'){i.min='0';i.step='any';} i.autocomplete='off'; i.spellcheck=false; return i; }
+function wrap(input) { const td=document.createElement('td'); td.appendChild(input); return td; }
 
-function fmt(n) { return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined,{maximumFractionDigits:4}); }
-function inp(cls, ph, type) {
-  const i = document.createElement('input');
-  i.type = type; i.className = cls; i.placeholder = ph;
-  if (type === 'number') { i.min='0'; i.step='any'; }
-  i.autocomplete='off'; i.spellcheck=false; return i;
-}
-function wrap(input) { const td = document.createElement('td'); td.appendChild(input); return td; }
-
-/* ═══════════════════════════════════
-   INIT
-═══════════════════════════════════ */
-const savedThresh = localStorage.getItem(THRESH_KEY);
-if (savedThresh) document.getElementById('low-stock-thresh').value = savedThresh;
+/* ── INIT ── */
+const savedThresh=localStorage.getItem(THRESH_KEY);
+if (savedThresh) document.getElementById('low-stock-thresh').value=savedThresh;
 setConnStatus('syncing');
 startListening();
 refreshUndoBtn();
